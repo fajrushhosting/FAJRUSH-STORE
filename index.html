@@ -765,15 +765,16 @@
             try {
                 // Fetch Categories
                 const { data: catData, error: catErr } = await supabaseClient.from('categories').select('*');
-                if (!catErr && catData && catData.length > 0) {
+                if (!catErr && catData) {
                     categories = catData.map(c => c.name);
+                    localStorage.setItem('fajrush_categories', JSON.stringify(categories));
                 } else {
                     categories = JSON.parse(localStorage.getItem('fajrush_categories')) || DEFAULT_CATEGORIES;
                 }
 
                 // Fetch Products
                 const { data: prodData, error: prodErr } = await supabaseClient.from('products').select('*');
-                if (!prodErr && prodData && prodData.length > 0) {
+                if (!prodErr && prodData) {
                     products = prodData.map(p => ({
                         id: p.id,
                         name: p.name,
@@ -784,13 +785,14 @@
                         scriptLink: p.script_link || p.scriptLink,
                         desc: p.description || p.desc
                     }));
+                    localStorage.setItem('fajrush_products', JSON.stringify(products));
                 } else {
                     products = JSON.parse(localStorage.getItem('fajrush_products')) || DEFAULT_PRODUCTS;
                 }
 
                 // Fetch Vouchers
                 const { data: vData, error: vErr } = await supabaseClient.from('vouchers').select('*');
-                if (!vErr && vData && vData.length > 0) {
+                if (!vErr && vData) {
                     vouchers = vData.map(v => ({
                         id: v.id,
                         code: v.code,
@@ -800,6 +802,7 @@
                         endDate: v.end_date || v.endDate,
                         active: v.active
                     }));
+                    localStorage.setItem('fajrush_vouchers', JSON.stringify(vouchers));
                 } else {
                     vouchers = JSON.parse(localStorage.getItem('fajrush_vouchers')) || DEFAULT_VOUCHERS;
                 }
@@ -815,6 +818,7 @@
                         total: t.total,
                         status: t.status
                     }));
+                    localStorage.setItem('fajrush_transactions', JSON.stringify(transactions));
                 } else {
                     transactions = JSON.parse(localStorage.getItem('fajrush_transactions')) || [];
                 }
@@ -823,6 +827,7 @@
                 const { data: sData, error: sErr } = await supabaseClient.from('settings').select('*').eq('key', 'qris_url').single();
                 if (!sErr && sData && sData.value) {
                     qrisImageUrl = sData.value;
+                    localStorage.setItem('fajrush_qris', qrisImageUrl);
                 } else {
                     qrisImageUrl = localStorage.getItem('fajrush_qris') || 'https://placehold.co/250x250/ffffff/0f172a?text=QRIS+FAJRUSH+STORE';
                 }
