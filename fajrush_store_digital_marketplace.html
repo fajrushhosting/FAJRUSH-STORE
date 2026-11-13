@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAJRUSH STORE - Official Digital Marketplace</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Font Inter & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                            dark: '#0f172a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 border-b border-slate-800 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-store text-white text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-lg font-black tracking-wider bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">FAJRUSH STORE</span>
+                    <span class="block text-[10px] text-indigo-400 font-semibold tracking-widest uppercase">Official Digital Shop</span>
+                </div>
+            </a>
+
+            <!-- Search Bar (Desktop) -->
+            <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Cari script bot, panel, nokos, aplikasi..." class="w-full bg-slate-800/80 border border-slate-700 rounded-full pl-10 pr-4 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                </div>
+            </div>
+
+            <!-- Nav Actions -->
+            <div class="flex items-center gap-3">
+                <button onclick="checkAdminAccess()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-400 hover:text-indigo-300 border border-slate-700 text-xs sm:text-sm font-semibold transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span class="hidden sm:inline">Admin Panel</span>
+                </button>
+                <a href="https://t.me/fajrushstore" target="_blank" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold transition-all shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+                    <i class="fa-brands fa-telegram text-base"></i>
+                    <span class="hidden sm:inline">Admin TG</span>
+                </a>
+            </div>
+        </div>
+        <!-- Mobile Search -->
+        <div class="md:hidden px-4 pb-3">
+            <div class="relative w-full">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                    <i class="fa-solid fa-search"></i>
+                </span>
+                <input type="text" oninput="handleSearch(this.value)" placeholder="Cari produk digital..." class="w-full bg-slate-800 border border-slate-700 rounded-full pl-10 pr-4 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Hero Banner -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-indigo-950/50 via-slate-900 to-slate-950 py-12 lg:py-16 border-b border-slate-800/80">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-slate-900/0 to-transparent pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto">
+                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+                    Solusi Kebutuhan <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Digital & Bot WhatsApp</span> Terlengkap
+                </h1>
+                <p class="text-slate-300 text-sm sm:text-base mb-8">
+                    Dapatkan Script Bot berkualitas, Panel Pterodactyl siap pakai, Paket Data termurah, Nokos WhatsApp & Telegram, serta Aplikasi Premium dengan garansi & pelayanan terbaik.
+                </p>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <a href="#products-section" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+                        <i class="fa-solid fa-bag-shopping"></i> Lihat Katalog Produk
+                    </a>
+                    <a href="https://t.me/fajrushstore" target="_blank" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-sm transition flex items-center gap-2">
+                        <i class="fa-brands fa-telegram text-indigo-400"></i> Hubungi Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Voucher & Promo Section (Visible to all users) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-ticket text-indigo-400"></i> Voucher & Diskon Tersedia
+            </h2>
+            <span class="text-xs text-slate-400">Gunakan kode voucher saat checkout!</span>
+        </div>
+        <div id="voucherListContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Populated via JS -->
+        </div>
+    </section>
+
+    <!-- Main Content & Products Section -->
+    <main id="products-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+        <!-- Categories Filter -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar" id="categoryFilters">
+            <!-- Rendered via JS dynamically -->
+        </div>
+
+        <!-- Products Grid -->
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Rendered via JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-500 text-2xl">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white">Produk Tidak Ditemukan</h3>
+            <p class="text-sm text-slate-400 mt-1">Coba kata kunci lain atau pilih kategori yang berbeda.</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 mt-16 py-10 text-slate-400 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <div>
+                    <span class="text-white font-bold text-base">FAJRUSH STORE</span>
+                    <p class="text-xs text-slate-400">Platform Jual Beli Produk Digital & Bot Terpercaya.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6 text-xs font-medium">
+                <a href="https://t.me/fajrushstore" target="_blank" class="hover:text-indigo-400 transition flex items-center gap-1">
+                    <i class="fa-brands fa-telegram text-base text-indigo-400"></i> Telegram: t.me/fajrushstore
+                </a>
+                <span class="text-slate-700">|</span>
+                <span>&copy; 2026 Fajrush Store. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Checkout / Payment Modal -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl my-8">
+            <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 w-9 h-9 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="checkoutStep1">
+                <h3 class="text-xl font-bold text-white mb-1 flex items-center gap-2">
+                    <i class="fa-solid fa-cart-shopping text-indigo-400"></i> Checkout Pesanan
+                </h3>
+                <p class="text-xs text-slate-400 mb-6">Konfirmasi produk dan masukkan data kontak Anda.</p>
+
+                <!-- Product Summary Card -->
+                <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-4 mb-6 flex gap-4 items-center">
+                    <img id="coProductImg" src="" alt="Product" class="w-20 h-20 object-cover rounded-xl border border-slate-700">
+                    <div class="flex-1">
+                        <span id="coProductCategory" class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 uppercase"></span>
+                        <h4 id="coProductName" class="text-white font-bold text-base mt-1"></h4>
+                        <div class="text-indigo-400 font-extrabold text-sm mt-1" id="coProductPrice"></div>
+                    </div>
+                </div>
+
+                <!-- Form Inputs -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Nomor WhatsApp / Username Telegram Anda</label>
+                        <input type="text" id="buyerContact" placeholder="Contoh: 081234567890 / @username" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Kode Voucher / Diskon (Opsional)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="voucherInput" placeholder="Masukkan kode voucher..." class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white uppercase placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+                            <button onclick="applyVoucher()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-400 font-semibold text-xs border border-slate-700 transition">Pakai</button>
+                        </div>
+                        <div id="voucherMessage" class="text-xs mt-1"></div>
+                    </div>
+
+                    <!-- Price Calculation Summary -->
+                    <div class="bg-slate-800/40 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs">
+                        <div class="flex justify-between text-slate-400">
+                            <span>Harga Produk:</span>
+                            <span id="summaryBasePrice">Rp 0</span>
+                        </div>
+                        <div id="summaryDiscountRow" class="flex justify-between text-emerald-400 hidden">
+                            <span>Diskon / Potongan:</span>
+                            <span id="summaryDiscountAmount">-Rp 0</span>
+                        </div>
+                        <div class="flex justify-between text-slate-400">
+                            <span>Kode Unik Pembayaran:</span>
+                            <span id="summaryUniqueCode" class="text-yellow-400 font-bold">+Rp 0</span>
+                        </div>
+                        <div class="border-t border-slate-700 pt-2 flex justify-between text-white font-bold text-sm">
+                            <span>Total Pembayaran:</span>
+                            <span id="summaryTotalPrice" class="text-indigo-400">Rp 0</span>
+                        </div>
+                    </div>
+
+                    <button onclick="proceedToPayment()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-qrcode"></i> Lanjut Pembayaran QRIS
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: QRIS Payment Simulation -->
+            <div id="checkoutStep2" class="hidden text-center">
+                <h3 class="text-xl font-bold text-white mb-1">Scan QRIS Pembayaran</h3>
+                <p class="text-xs text-slate-400 mb-4">Scan menggunakan QRIS All Payment (GoPay, DANA, OVO, BCA, ShopeePay, dll)</p>
+
+                <!-- Total Exact Amount -->
+                <div class="bg-indigo-950/60 border border-indigo-500/30 rounded-2xl p-3 mb-4">
+                    <span class="text-xs text-indigo-300 block">Total Transfer Exact (Termasuk Kode Unik):</span>
+                    <span id="qrisExactAmount" class="text-xl font-black text-white">Rp 0</span>
+                    <span class="text-[10px] text-yellow-400 block mt-0.5">Harap transfer sesuai nominal persis agar terdeteksi otomatis!</span>
+                </div>
+
+                <!-- QRIS Image Container -->
+                <div class="bg-white p-4 rounded-2xl inline-block mb-4 shadow-xl">
+                    <img id="qrisDisplayImg" src="https://placehold.co/250x250/ffffff/0f172a?text=QRIS+FAJRUSH" alt="QRIS FAJRUSH STORE" class="w-48 h-48 object-contain mx-auto">
+                </div>
+
+                <!-- Countdown & Status -->
+                <div class="mb-6">
+                    <div class="text-xs text-slate-400 mb-1 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-spinner animate-spin text-indigo-400"></i>
+                        <span>Menunggu Pembayaran Otomatis...</span>
+                    </div>
+                    <div class="text-lg font-mono font-bold text-yellow-400" id="paymentTimer">05:00</div>
+                    <div class="w-full bg-slate-800 h-2 rounded-full mt-3 overflow-hidden">
+                        <div id="paymentProgressBar" class="bg-indigo-500 h-full w-full transition-all duration-1000"></div>
+                    </div>
+                </div>
+
+                <!-- Simulation Action Button (For testing demo) -->
+                <div class="space-y-2">
+                    <button onclick="simulatePaymentSuccess()" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check-circle"></i> [Simulasi] Pembayaran Berhasil
+                    </button>
+                    <button onclick="backToStep1()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
+                        Kembali
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Success & Telegram Redirect -->
+            <div id="checkoutStep3" class="hidden text-center">
+                <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-1">Pembayaran Berhasil!</h3>
+                <p class="text-xs text-slate-400 mb-6">Struk pembelian Anda telah siap. Klik tombol di bawah untuk kirim otomatis ke Telegram Admin.</p>
+
+                <!-- Receipt Preview Box -->
+                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 text-left font-mono text-[11px] text-slate-300 mb-6 max-h-48 overflow-y-auto whitespace-pre-line" id="receiptTextPreview">
+                    <!-- Receipt generated via JS -->
+                </div>
+
+                <a id="telegramRedirectBtn" href="https://t.me/fajrushstore" target="_blank" onclick="completeOrderFinal()" class="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-telegram text-lg"></i> Kirim Struk ke Telegram Admin (t.me/fajrushstore)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ADMIN LOGIN MODAL ================= -->
+    <div id="adminLoginModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 sm:p-8 relative shadow-2xl">
+            <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Login Admin Panel</h3>
+                <p class="text-xs text-slate-400 mt-1">Masukkan kredensial admin Fajrush Store.</p>
+            </div>
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Username</label>
+                    <input type="text" id="adminUserInput" placeholder="Username admin..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Password</label>
+                    <input type="password" id="adminPassInput" placeholder="Password admin..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                <button onclick="verifyAdminLogin()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition shadow-lg shadow-indigo-600/30">
+                    Masuk Admin Panel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ADMIN PANEL MODAL ================= -->
+    <div id="adminModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-6 sm:p-8 relative shadow-2xl my-8">
+            <button onclick="closeAdminModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 w-9 h-9 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Admin Header -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-xl">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Admin Panel Fajrush Store</h3>
+                        <p class="text-xs text-slate-400">Kelola produk, kategori, harga, stok, voucher, dan QRIS.</p>
+                    </div>
+                </div>
+                <button onclick="adminLogout()" class="px-3 py-1.5 rounded-xl bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white text-xs font-semibold border border-rose-500/30 transition">
+                    <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                </button>
+            </div>
+
+            <!-- Admin Navigation Tabs -->
+            <div class="flex gap-2 overflow-x-auto pb-3 mb-6 border-b border-slate-800 no-scrollbar">
+                <button onclick="switchAdminTab('products')" id="adminTabBtn-products" class="admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-box"></i> Kelola Produk
+                </button>
+                <button onclick="switchAdminTab('categories')" id="adminTabBtn-categories" class="admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-tags"></i> Kelola Kategori
+                </button>
+                <button onclick="switchAdminTab('vouchers')" id="adminTabBtn-vouchers" class="admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-ticket"></i> Kelola Voucher
+                </button>
+                <button onclick="switchAdminTab('qris')" id="adminTabBtn-qris" class="admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-qrcode"></i> Setting QRIS
+                </button>
+                <button onclick="switchAdminTab('transactions')" id="adminTabBtn-transactions" class="admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-receipt"></i> Daftar Transaksi
+                </button>
+            </div>
+
+            <!-- TAB 1: PRODUCTS -->
+            <div id="adminTab-products" class="admin-tab-content space-y-6">
+                <div class="flex justify-between items-center">
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Daftar Produk Store</h4>
+                    <button onclick="openProductFormModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-plus"></i> Tambah Produk Baru
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-800 uppercase text-slate-400 font-semibold">
+                            <tr>
+                                <th class="p-3 rounded-l-xl">Produk</th>
+                                <th class="p-3">Kategori</th>
+                                <th class="p-3">Harga</th>
+                                <th class="p-3">Stok</th>
+                                <th class="p-3 rounded-r-xl text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminProductTableBody" class="divide-y divide-slate-800">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: CATEGORIES -->
+            <div id="adminTab-categories" class="admin-tab-content space-y-6 hidden">
+                <div class="flex justify-between items-center">
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Daftar Kategori Produk</h4>
+                    <button onclick="openCategoryFormModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-plus"></i> Tambah Kategori Baru
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-800 uppercase text-slate-400 font-semibold">
+                            <tr>
+                                <th class="p-3 rounded-l-xl">Nama Kategori</th>
+                                <th class="p-3 rounded-r-xl text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminCategoryTableBody" class="divide-y divide-slate-800">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 3: Vouchers -->
+            <div id="adminTab-vouchers" class="admin-tab-content space-y-6 hidden">
+                <div class="flex justify-between items-center">
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Kelola Voucher Diskon</h4>
+                    <button onclick="openVoucherFormModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-plus"></i> Tambah Voucher
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-800 uppercase text-slate-400 font-semibold">
+                            <tr>
+                                <th class="p-3 rounded-l-xl">Kode Voucher</th>
+                                <th class="p-3">Tipe & Nilai</th>
+                                <th class="p-3">Mulai - Berakhir</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 rounded-r-xl text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminVoucherTableBody" class="divide-y divide-slate-800">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 4: QRIS SETTING -->
+            <div id="adminTab-qris" class="admin-tab-content space-y-6 hidden">
+                <div class="max-w-md mx-auto bg-slate-800/50 border border-slate-700 p-6 rounded-2xl text-center">
+                    <h4 class="text-sm font-bold text-white mb-2">Ganti Gambar QRIS Pembayaran</h4>
+                    <p class="text-xs text-slate-400 mb-6">Upload foto QRIS baru langsung dari perangkat Anda.</p>
+                    <div class="bg-white p-3 rounded-xl inline-block mb-4 shadow">
+                        <img id="adminQrisPreviewImg" src="" alt="QRIS" class="w-48 h-48 object-contain mx-auto">
+                    </div>
+                    <div class="space-y-3">
+                        <input type="file" id="qrisUploadInput" accept="image/*" onchange="previewNewQris(event)" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 cursor-pointer">
+                        <button onclick="saveNewQris()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition">
+                            Simpan QRIS Baru
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: TRANSACTIONS -->
+            <div id="adminTab-transactions" class="admin-tab-content space-y-6 hidden">
+                <div class="flex justify-between items-center">
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Riwayat Transaksi Masuk</h4>
+                    <button onclick="clearTransactions()" class="px-3 py-1.5 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/30 text-xs font-semibold hover:bg-rose-600 hover:text-white transition">
+                        Bersihkan Riwayat
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-800 uppercase text-slate-400 font-semibold">
+                            <tr>
+                                <th class="p-3 rounded-l-xl">Waktu</th>
+                                <th class="p-3">Produk</th>
+                                <th class="p-3">Kontak Pembeli</th>
+                                <th class="p-3">Total</th>
+                                <th class="p-3 rounded-r-xl">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTransactionTableBody" class="divide-y divide-slate-800">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ADD CATEGORY MODAL ================= -->
+    <div id="categoryFormModal" class="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 relative shadow-2xl">
+            <button onclick="closeCategoryFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-lg font-bold text-white mb-4">Tambah Kategori Baru</h3>
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Nama Kategori</label>
+                    <input type="text" id="newCategoryNameInput" placeholder="Contoh: Jasa Joki / Top Up Game" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                <button onclick="saveNewCategory()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition shadow-lg shadow-indigo-600/30">
+                    Simpan Kategori
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ADD/EDIT PRODUCT MODAL ================= -->
+    <div id="productFormModal" class="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 relative shadow-2xl">
+            <button onclick="closeProductFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 id="productFormTitle" class="text-lg font-bold text-white mb-4">Tambah Produk Baru</h3>
+            <input type="hidden" id="editProductId">
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Nama Produk</label>
+                    <input type="text" id="prodNameInput" placeholder="Contoh: Script Bot WA Auto Pushkontak" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Kategori</label>
+                    <select id="prodCategoryInput" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Harga (Rp)</label>
+                        <input type="number" id="prodPriceInput" placeholder="15000" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Stok</label>
+                        <input type="number" id="prodStockInput" placeholder="99" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Foto Produk (Ambil dari Perangkat)</label>
+                    <input type="file" id="prodImageFile" accept="image/*" class="w-full text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-indigo-400 hover:file:bg-slate-700 cursor-pointer">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">File Script / Link Download (Khusus Script/Aplikasi)</label>
+                    <input type="text" id="prodScriptInput" placeholder="Link download / instruksi script..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Deskripsi Singkat</label>
+                    <textarea id="prodDescInput" rows="3" placeholder="Deskripsi produk..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500"></textarea>
+                </div>
+                <button onclick="saveProductData()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition shadow-lg shadow-indigo-600/30">
+                    Simpan Produk
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ADD VOUCHER MODAL ================= -->
+    <div id="voucherFormModal" class="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 relative shadow-2xl">
+            <button onclick="closeVoucherFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-lg font-bold text-white mb-4">Tambah Voucher Baru</h3>
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Kode Voucher</label>
+                    <input type="text" id="vCodeInput" placeholder="FAJRUSH20" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white uppercase focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Tipe Potongan</label>
+                    <select id="vTypeInput" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+                        <option value="percent">Potongan Persen (%)</option>
+                        <option value="fixed">Potongan Nominal (Rp)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Nilai Potongan (Angka saja)</label>
+                    <input type="number" id="vValueInput" placeholder="Contoh: 20 (untuk 20%) atau 5000 (untuk Rp 5000)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Tanggal Mulai</label>
+                        <input type="date" id="vStartInput" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Tanggal Berakhir</label>
+                        <input type="date" id="vEndInput" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2 py-2 text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+                <button onclick="saveVoucherData()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition shadow-lg shadow-indigo-600/30">
+                    Simpan Voucher
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Toast Notification -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
+        <div id="toastIcon" class="w-8 h-8 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center">
+            <i class="fa-solid fa-bell"></i>
+        </div>
+        <div>
+            <h5 id="toastTitle" class="text-xs font-bold">Notifikasi</h5>
+            <p id="toastDesc" class="text-[11px] text-slate-400">Pesan sukses...</p>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic with Supabase Integration -->
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://vwhaesgrjdwrparigfsl.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_S0bglYfamTd18Mc37vHDGA_jH3NDOyg';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Default Data Store
+        const DEFAULT_CATEGORIES = [
+            'Script Bot',
+            'Panel Pterodactyl',
+            'Paket Data',
+            'Nokos WhatsApp',
+            'Nokos Telegram',
+            'Nokos Shopee',
+            'Reseller Panel',
+            'Aplikasi Premium'
+        ];
+
+        const DEFAULT_PRODUCTS = [
+            {
+                id: 'prod-1',
+                name: 'Script Bot WhatsApp Bug V12 VIP',
+                category: 'Script Bot',
+                price: 25000,
+                stock: 45,
+                image: 'https://placehold.co/400x300/4f46e5/ffffff?text=Script+Bot+WA',
+                scriptLink: 'https://t.me/fajrushstore',
+                desc: 'Script Bot WhatsApp full fitur, anti-ban, pushkontak, auto-download, dan bebas update.'
+            },
+            {
+                id: 'prod-2',
+                name: 'Panel Pterodactyl 2GB RAM / 1 VCPU',
+                category: 'Panel Pterodactyl',
+                price: 10000,
+                stock: 120,
+                image: 'https://placehold.co/400x300/312e81/ffffff?text=Panel+Pterodactyl',
+                scriptLink: 'Akses login panel dikirim via WA/TG',
+                desc: 'Panel Pterodactyl stabil, uptime 99.9%, cocok untuk bot 24 jam nonstop.'
+            },
+            {
+                id: 'prod-3',
+                name: 'Paket Data Telkomsel 10GB Full 24 Jam',
+                category: 'Paket Data',
+                price: 32000,
+                stock: 85,
+                image: 'https://placehold.co/400x300/dc2626/ffffff?text=Paket+Data+Tsel',
+                scriptLink: 'Masukkan nomor saat checkout',
+                desc: 'Paket data internet cepat reguler tanpa pembagian waktu.'
+            },
+            {
+                id: 'prod-4',
+                name: 'Nokos WhatsApp (Nomor Kosong Indo Fresh)',
+                category: 'Nokos WhatsApp',
+                price: 5000,
+                stock: 250,
+                image: 'https://placehold.co/400x300/059669/ffffff?text=Nokos+WhatsApp',
+                scriptLink: 'Kode OTP dikirim otomatis',
+                desc: 'Nomor kosong WhatsApp aktif dan fresh untuk verifikasi akun aman.'
+            },
+            {
+                id: 'prod-5',
+                name: 'Nokos Telegram Premium / Regular',
+                category: 'Nokos Telegram',
+                price: 6000,
+                stock: 150,
+                image: 'https://placehold.co/400x300/0284c7/ffffff?text=Nokos+Telegram',
+                scriptLink: 'Akses nomor & OTP instan',
+                desc: 'Nokos Telegram negara random/indo siap pakai.'
+            },
+            {
+                id: 'prod-6',
+                name: 'Nokos Shopee / E-Commerce',
+                category: 'Nokos Shopee',
+                price: 4500,
+                stock: 90,
+                image: 'https://placehold.co/400x300/ea580c/ffffff?text=Nokos+Shopee',
+                scriptLink: 'OTP Shopee instan',
+                desc: 'Nomor verifikasi untuk akun Shopee aman dan terverifikasi.'
+            },
+            {
+                id: 'prod-7',
+                name: 'Reseller Panel Pterodactyl Unlimited',
+                category: 'Reseller Panel',
+                price: 75000,
+                stock: 20,
+                image: 'https://placehold.co/400x300/7c3aed/ffffff?text=Reseller+Panel',
+                scriptLink: 'Akses Admin Panel Pterodactyl',
+                desc: 'Bisa create panel sendiri sepuasnya untuk dijual kembali ke client.'
+            },
+            {
+                id: 'prod-8',
+                name: 'Aplikasi Premium Netflix 1 Bulan',
+                category: 'Aplikasi Premium',
+                price: 35000,
+                stock: 15,
+                image: 'https://placehold.co/400x300/b91c1c/ffffff?text=Netflix+Premium',
+                scriptLink: 'Akun dikirim ke kontak',
+                desc: 'Akun Netflix private 4K UHD anti-onscrined / bergaransi penuh.'
+            }
+        ];
+
+        const DEFAULT_VOUCHERS = [
+            {
+                id: 'v-1',
+                code: 'FAJRUSH20',
+                type: 'percent',
+                value: 20,
+                startDate: '2026-01-01',
+                endDate: '2026-12-31',
+                active: true
+            },
+            {
+                id: 'v-2',
+                code: 'HEMAT10K',
+                type: 'fixed',
+                value: 5000,
+                startDate: '2026-01-01',
+                endDate: '2026-12-31',
+                active: true
+            }
+        ];
+
+        // State variables
+        let categories = JSON.parse(localStorage.getItem('fajrush_categories')) || DEFAULT_CATEGORIES;
+        let products = JSON.parse(localStorage.getItem('fajrush_products')) || DEFAULT_PRODUCTS;
+        let vouchers = JSON.parse(localStorage.getItem('fajrush_vouchers')) || DEFAULT_VOUCHERS;
+        let transactions = JSON.parse(localStorage.getItem('fajrush_transactions')) || [];
+        let qrisImageUrl = localStorage.getItem('fajrush_qris') || 'https://placehold.co/250x250/ffffff/0f172a?text=QRIS+FAJRUSH+STORE';
+
+        let currentCategory = 'Semua';
+        let searchQuery = '';
+        let selectedProduct = null;
+        let appliedVoucher = null;
+        let currentUniqueCode = 0;
+        let currentDiscountAmount = 0;
+        let paymentTimerInterval = null;
+
+        // Initialize App on Load with Supabase Sync
+        window.onload = async function () {
+            await loadDataFromSupabase();
+            renderCategoryFilters();
+            renderProducts();
+            renderVouchers();
+            renderAdminProducts();
+            renderAdminCategories();
+            renderAdminVouchers();
+            renderAdminTransactions();
+            document.getElementById('adminQrisPreviewImg').src = qrisImageUrl;
+        };
+
+        // Load Data from Supabase Cloud with Fallback
+        async function loadDataFromSupabase() {
+            try {
+                // Fetch Categories
+                const { data: catData, error: catErr } = await supabaseClient.from('categories').select('*');
+                if (!catErr && catData && catData.length > 0) {
+                    categories = catData.map(c => c.name);
+                } else {
+                    categories = JSON.parse(localStorage.getItem('fajrush_categories')) || DEFAULT_CATEGORIES;
+                }
+
+                // Fetch Products
+                const { data: prodData, error: prodErr } = await supabaseClient.from('products').select('*');
+                if (!prodErr && prodData && prodData.length > 0) {
+                    products = prodData.map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        category: p.category,
+                        price: p.price,
+                        stock: p.stock,
+                        image: p.image,
+                        scriptLink: p.script_link || p.scriptLink,
+                        desc: p.description || p.desc
+                    }));
+                } else {
+                    products = JSON.parse(localStorage.getItem('fajrush_products')) || DEFAULT_PRODUCTS;
+                }
+
+                // Fetch Vouchers
+                const { data: vData, error: vErr } = await supabaseClient.from('vouchers').select('*');
+                if (!vErr && vData && vData.length > 0) {
+                    vouchers = vData.map(v => ({
+                        id: v.id,
+                        code: v.code,
+                        type: v.type,
+                        value: v.value,
+                        startDate: v.start_date || v.startDate,
+                        endDate: v.end_date || v.endDate,
+                        active: v.active
+                    }));
+                } else {
+                    vouchers = JSON.parse(localStorage.getItem('fajrush_vouchers')) || DEFAULT_VOUCHERS;
+                }
+
+                // Fetch Transactions
+                const { data: tData, error: tErr } = await supabaseClient.from('transactions').select('*');
+                if (!tErr && tData) {
+                    transactions = tData.map(t => ({
+                        id: t.id,
+                        time: t.time,
+                        productName: t.product_name || t.productName,
+                        contact: t.contact,
+                        total: t.total,
+                        status: t.status
+                    }));
+                } else {
+                    transactions = JSON.parse(localStorage.getItem('fajrush_transactions')) || [];
+                }
+
+                // Fetch QRIS Setting
+                const { data: sData, error: sErr } = await supabaseClient.from('settings').select('*').eq('key', 'qris_url').single();
+                if (!sErr && sData && sData.value) {
+                    qrisImageUrl = sData.value;
+                } else {
+                    qrisImageUrl = localStorage.getItem('fajrush_qris') || 'https://placehold.co/250x250/ffffff/0f172a?text=QRIS+FAJRUSH+STORE';
+                }
+            } catch (err) {
+                console.warn('Supabase offline or tables uninitialized, using localStorage:', err);
+                categories = JSON.parse(localStorage.getItem('fajrush_categories')) || DEFAULT_CATEGORIES;
+                products = JSON.parse(localStorage.getItem('fajrush_products')) || DEFAULT_PRODUCTS;
+                vouchers = JSON.parse(localStorage.getItem('fajrush_vouchers')) || DEFAULT_VOUCHERS;
+                transactions = JSON.parse(localStorage.getItem('fajrush_transactions')) || [];
+                qrisImageUrl = localStorage.getItem('fajrush_qris') || 'https://placehold.co/250x250/ffffff/0f172a?text=QRIS+FAJRUSH+STORE';
+            }
+        }
+
+        // Toast notification helper
+        function showToast(title, desc, isError = false) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastDesc').innerText = desc;
+            const iconDiv = document.getElementById('toastIcon');
+            if (isError) {
+                iconDiv.className = "w-8 h-8 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center";
+                iconDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else {
+                iconDiv.className = "w-8 h-8 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center";
+                iconDiv.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            }
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        // Render Category Filter Buttons on Homepage
+        function renderCategoryFilters() {
+            const container = document.getElementById('categoryFilters');
+            container.innerHTML = '';
+
+            // 'Semua' button
+            const allBtn = document.createElement('button');
+            allBtn.onclick = () => filterCategory('Semua');
+            allBtn.className = `cat-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold ${currentCategory === 'Semua' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700'} whitespace-nowrap transition-all`;
+            allBtn.innerHTML = 'Semua Produk';
+            container.appendChild(allBtn);
+
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.onclick = () => filterCategory(cat);
+                btn.className = `cat-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold ${currentCategory === cat ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700'} whitespace-nowrap transition-all`;
+                btn.innerHTML = cat;
+                container.appendChild(btn);
+            });
+
+            // Populate product form category select
+            const selectEl = document.getElementById('prodCategoryInput');
+            if (selectEl) {
+                selectEl.innerHTML = '';
+                categories.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat;
+                    opt.innerText = cat;
+                    selectEl.appendChild(opt);
+                });
+            }
+        }
+
+        // Render Public Products
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const emptyState = document.getElementById('emptyState');
+            grid.innerHTML = '';
+
+            let filtered = products.filter(p => {
+                const matchCat = currentCategory === 'Semua' || p.category === currentCategory;
+                const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchCat && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-indigo-500/50 transition-all duration-300 flex flex-col group shadow-lg shadow-black/40';
+                card.innerHTML = `
+                    <div class="relative overflow-hidden aspect-video bg-slate-800">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x300/4f46e5/ffffff?text=Fajrush+Store'">
+                        <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-indigo-300 border border-slate-700">
+                            ${p.category}
+                        </div>
+                        <div class="absolute top-3 right-3 bg-emerald-500/90 text-white px-2.5 py-1 rounded-full text-[10px] font-bold shadow">
+                            Stok: ${p.stock}
+                        </div>
+                    </div>
+                    <div class="p-5 flex flex-col flex-1 justify-between">
+                        <div>
+                            <h3 class="text-white font-bold text-base mb-1 line-clamp-1 group-hover:text-indigo-400 transition-colors">${p.name}</h3>
+                            <p class="text-xs text-slate-400 line-clamp-2 mb-4">${p.desc}</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] text-slate-500 block">Harga</span>
+                                <span class="text-indigo-400 font-extrabold text-base">Rp ${p.price.toLocaleString('id-ID')}</span>
+                            </div>
+                            <button onclick="openCheckoutModal('${p.id}')" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition shadow-md shadow-indigo-600/30 flex items-center gap-1.5">
+                                <i class="fa-solid fa-cart-plus"></i> Beli
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            renderCategoryFilters();
+            renderProducts();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val;
+            renderProducts();
+        }
+
+        // Render Vouchers for Users
+        function renderVouchers() {
+            const container = document.getElementById('voucherListContainer');
+            container.innerHTML = '';
+            
+            const activeVouchers = vouchers.filter(v => v.active);
+            if (activeVouchers.length === 0) {
+                container.innerHTML = '<div class="text-xs text-slate-500 col-span-3">Belum ada voucher aktif saat ini.</div>';
+                return;
+            }
+
+            activeVouchers.forEach(v => {
+                const card = document.createElement('div');
+                card.className = 'bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between shadow-md relative overflow-hidden';
+                let discountText = v.type === 'percent' ? `${v.value}% Diskon` : `Rp ${v.value.toLocaleString('id-ID')} Potongan`;
+                card.innerHTML = `
+                    <div class="absolute -right-6 -bottom-6 text-slate-800 text-6xl opacity-20 pointer-events-none">
+                        <i class="fa-solid fa-ticket"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-0.5">Voucher Spesial</span>
+                        <h4 class="text-white font-mono font-black text-lg">${v.code}</h4>
+                        <p class="text-xs text-emerald-400 font-semibold mt-0.5">${discountText}</p>
+                        <span class="text-[10px] text-slate-500 block mt-1">Berlaku s/d ${v.endDate}</span>
+                    </div>
+                    <button onclick="copyVoucherCode('${v.code}')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 font-semibold text-xs border border-slate-700 transition">
+                        <i class="fa-solid fa-copy"></i> Salin
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function copyVoucherCode(code) {
+            navigator.clipboard.writeText(code);
+            showToast('Berhasil Disalin!', `Kode voucher ${code} berhasil disalin ke clipboard.`);
+        }
+
+        // Checkout Flow
+        function openCheckoutModal(productId) {
+            selectedProduct = products.find(p => p.id === productId);
+            if (!selectedProduct) return;
+
+            document.getElementById('coProductImg').src = selectedProduct.image;
+            document.getElementById('coProductCategory').innerText = selectedProduct.category;
+            document.getElementById('coProductName').innerText = selectedProduct.name;
+            document.getElementById('coProductPrice').innerText = `Rp ${selectedProduct.price.toLocaleString('id-ID')}`;
+            document.getElementById('buyerContact').value = '';
+            document.getElementById('voucherInput').value = '';
+            document.getElementById('voucherMessage').innerHTML = '';
+            appliedVoucher = null;
+            currentDiscountAmount = 0;
+
+            updatePriceSummary();
+
+            document.getElementById('checkoutStep1').classList.remove('hidden');
+            document.getElementById('checkoutStep2').classList.add('hidden');
+            document.getElementById('checkoutStep3').classList.add('hidden');
+            document.getElementById('checkoutModal').classList.remove('hidden');
+            document.getElementById('checkoutModal').classList.add('flex');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.remove('flex');
+            document.getElementById('checkoutModal').classList.add('hidden');
+            if (paymentTimerInterval) clearInterval(paymentTimerInterval);
+        }
+
+        function applyVoucher() {
+            const code = document.getElementById('voucherInput').value.trim().toUpperCase();
+            const msgEl = document.getElementById('voucherMessage');
+            if (!code) {
+                appliedVoucher = null;
+                currentDiscountAmount = 0;
+                msgEl.innerText = '';
+                updatePriceSummary();
+                return;
+            }
+
+            const found = vouchers.find(v => v.code === code && v.active);
+            if (!found) {
+                appliedVoucher = null;
+                currentDiscountAmount = 0;
+                msgEl.className = "text-xs mt-1 text-rose-400 font-semibold";
+                msgEl.innerText = "Kode voucher tidak valid atau sudah kedaluwarsa.";
+                updatePriceSummary();
+                return;
+            }
+
+            appliedVoucher = found;
+            if (found.type === 'percent') {
+                currentDiscountAmount = Math.round((selectedProduct.price * found.value) / 100);
+            } else {
+                currentDiscountAmount = found.value;
+            }
+            if (currentDiscountAmount > selectedProduct.price) currentDiscountAmount = selectedProduct.price;
+
+            msgEl.className = "text-xs mt-1 text-emerald-400 font-semibold";
+            msgEl.innerText = `Voucher ${found.code} berhasil digunakan!`;
+            updatePriceSummary();
+        }
+
+        function updatePriceSummary() {
+            const basePrice = selectedProduct.price;
+            document.getElementById('summaryBasePrice').innerText = `Rp ${basePrice.toLocaleString('id-ID')}`;
+
+            const discRow = document.getElementById('summaryDiscountRow');
+            if (currentDiscountAmount > 0) {
+                discRow.classList.remove('hidden');
+                document.getElementById('summaryDiscountAmount').innerText = `-Rp ${currentDiscountAmount.toLocaleString('id-ID')}`;
+            } else {
+                discRow.classList.add('hidden');
+            }
+
+            currentUniqueCode = Math.floor(Math.random() * 899) + 100;
+            document.getElementById('summaryUniqueCode').innerText = `+Rp ${currentUniqueCode}`;
+
+            const finalTotal = (basePrice - currentDiscountAmount) + currentUniqueCode;
+            document.getElementById('summaryTotalPrice').innerText = `Rp ${finalTotal.toLocaleString('id-ID')}`;
+        }
+
+        function proceedToPayment() {
+            const contact = document.getElementById('buyerContact').value.trim();
+            if (!contact) {
+                showToast('Kontak Kosong', 'Harap masukkan nomor WhatsApp atau username Telegram Anda!', true);
+                return;
+            }
+
+            const basePrice = selectedProduct.price;
+            const finalTotal = (basePrice - currentDiscountAmount) + currentUniqueCode;
+
+            document.getElementById('qrisExactAmount').innerText = `Rp ${finalTotal.toLocaleString('id-ID')}`;
+            document.getElementById('qrisDisplayImg').src = qrisImageUrl;
+
+            document.getElementById('checkoutStep1').classList.add('hidden');
+            document.getElementById('checkoutStep2').classList.remove('hidden');
+
+            startPaymentTimer(300); // 5 minutes countdown
+        }
+
+        function backToStep1() {
+            if (paymentTimerInterval) clearInterval(paymentTimerInterval);
+            document.getElementById('checkoutStep2').classList.add('hidden');
+            document.getElementById('checkoutStep1').classList.remove('hidden');
+        }
+
+        function startPaymentTimer(duration) {
+            let timer = duration, minutes, seconds;
+            const timerDisplay = document.getElementById('paymentTimer');
+            const progressBar = document.getElementById('paymentProgressBar');
+            
+            if (paymentTimerInterval) clearInterval(paymentTimerInterval);
+
+            paymentTimerInterval = setInterval(() => {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                timerDisplay.textContent = minutes + ":" + seconds;
+                const percent = (timer / duration) * 100;
+                progressBar.style.width = percent + '%';
+
+                if (--timer < 0) {
+                    clearInterval(paymentTimerInterval);
+                    timerDisplay.textContent = "Waktu Habis!";
+                }
+            }, 1000);
+        }
+
+        async function simulatePaymentSuccess() {
+            if (paymentTimerInterval) clearInterval(paymentTimerInterval);
+
+            const contact = document.getElementById('buyerContact').value.trim();
+            const basePrice = selectedProduct.price;
+            const finalTotal = (basePrice - currentDiscountAmount) + currentUniqueCode;
+            const orderTime = new Date().toLocaleString('id-ID');
+
+            const newTrx = {
+                id: 'TRX-' + Math.floor(Math.random() * 900000 + 100000),
+                time: orderTime,
+                productName: selectedProduct.name,
+                contact: contact,
+                total: finalTotal,
+                status: 'Berhasil'
+            };
+            transactions.unshift(newTrx);
+            localStorage.setItem('fajrush_transactions', JSON.stringify(transactions));
+
+            // Save transaction to Supabase
+            try {
+                await supabaseClient.from('transactions').insert([{
+                    id: newTrx.id,
+                    time: newTrx.time,
+                    product_name: newTrx.productName,
+                    contact: newTrx.contact,
+                    total: newTrx.total,
+                    status: newTrx.status
+                }]);
+            } catch (e) {
+                console.warn('Supabase trx insert error:', e);
+            }
+
+            renderAdminTransactions();
+
+            // Reduce stock
+            selectedProduct.stock = Math.max(0, selectedProduct.stock - 1);
+            localStorage.setItem('fajrush_products', JSON.stringify(products));
+            try {
+                await supabaseClient.from('products').upsert({
+                    id: selectedProduct.id,
+                    name: selectedProduct.name,
+                    category: selectedProduct.category,
+                    price: selectedProduct.price,
+                    stock: selectedProduct.stock,
+                    image: selectedProduct.image,
+                    script_link: selectedProduct.scriptLink,
+                    description: selectedProduct.desc
+                });
+            } catch (e) {
+                console.warn('Supabase stock update error:', e);
+            }
+
+            renderProducts();
+            renderAdminProducts();
+
+            const receiptText = `*STRUK PEMBELIAN FAJRUSH STORE*\n\n` +
+                `🆔 ID Transaksi: ${newTrx.id}\n` +
+                `📦 Produk: ${selectedProduct.name}\n` +
+                `💵 Harga: Rp ${basePrice.toLocaleString('id-ID')}\n` +
+                `🏷️ Diskon: -Rp ${currentDiscountAmount.toLocaleString('id-ID')}\n` +
+                `🔢 Kode Unik: +Rp ${currentUniqueCode}\n` +
+                `💰 Total Transfer: Rp ${finalTotal.toLocaleString('id-ID')} (LUNAS)\n` +
+                `📱 Kontak Pembeli: ${contact}\n` +
+                `📅 Waktu: ${orderTime}\n` +
+                `🔑 Akses / File: ${selectedProduct.scriptLink}\n\n` +
+                `_Terima kasih telah berbelanja di Fajrush Store!_`;
+
+            document.getElementById('receiptTextPreview').innerText = receiptText;
+            const tgUrl = `https://t.me/fajrushstore?text=` + encodeURIComponent(receiptText);
+            document.getElementById('telegramRedirectBtn').href = tgUrl;
+
+            document.getElementById('checkoutStep2').classList.add('hidden');
+            document.getElementById('checkoutStep3').classList.remove('hidden');
+        }
+
+        function completeOrderFinal() {
+            showToast('Pesanan Selesai', 'Anda diarahkan ke Telegram Admin untuk konfirmasi.');
+            setTimeout(() => {
+                closeCheckoutModal();
+            }, 1500);
+        }
+
+        // ================= ADMIN LOGIN & PANEL LOGIC =================
+        function checkAdminAccess() {
+            document.getElementById('adminLoginModal').classList.remove('hidden');
+            document.getElementById('adminLoginModal').classList.add('flex');
+            document.getElementById('adminUserInput').value = '';
+            document.getElementById('adminPassInput').value = '';
+        }
+
+        function closeAdminLoginModal() {
+            document.getElementById('adminLoginModal').classList.remove('flex');
+            document.getElementById('adminLoginModal').classList.add('hidden');
+        }
+
+        function verifyAdminLogin() {
+            const u = document.getElementById('adminUserInput').value.trim();
+            const p = document.getElementById('adminPassInput').value.trim();
+
+            if (u === 'fajrushganteng' && p === 'fajrush') {
+                closeAdminLoginModal();
+                openAdminModal();
+                showToast('Login Berhasil', 'Selamat datang kembali, Admin Fajrush Store!');
+            } else {
+                showToast('Login Gagal', 'Username atau Password admin salah!', true);
+            }
+        }
+
+        function adminLogout() {
+            closeAdminModal();
+            showToast('Keluar', 'Anda berhasil keluar dari Admin Panel.');
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+            document.getElementById('adminModal').classList.add('flex');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('flex');
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function switchAdminTab(tabName) {
+            ['products', 'categories', 'vouchers', 'qris', 'transactions'].forEach(t => {
+                document.getElementById(`adminTab-${t}`).classList.add('hidden');
+                document.getElementById(`adminTabBtn-${t}`).className = "admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition flex items-center gap-2 whitespace-nowrap";
+            });
+            document.getElementById(`adminTab-${tabName}`).classList.remove('hidden');
+            document.getElementById(`adminTabBtn-${tabName}`).className = "admin-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white transition flex items-center gap-2 whitespace-nowrap";
+        }
+
+        // Admin Categories Management
+        function renderAdminCategories() {
+            const tbody = document.getElementById('adminCategoryTableBody');
+            tbody.innerHTML = '';
+
+            categories.forEach((cat, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/40 transition';
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-tag text-indigo-400 text-xs"></i> ${cat}
+                    </td>
+                    <td class="p-3 text-right">
+                        <button onclick="deleteCategory(${index})" class="px-2.5 py-1.5 rounded-lg bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white transition"><i class="fa-solid fa-trash"></i> Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openCategoryFormModal() {
+            document.getElementById('newCategoryNameInput').value = '';
+            document.getElementById('categoryFormModal').classList.remove('hidden');
+            document.getElementById('categoryFormModal').classList.add('flex');
+        }
+
+        function closeCategoryFormModal() {
+            document.getElementById('categoryFormModal').classList.remove('flex');
+            document.getElementById('categoryFormModal').classList.add('hidden');
+        }
+
+        async function saveNewCategory() {
+            const name = document.getElementById('newCategoryNameInput').value.trim();
+            if (!name) {
+                showToast('Nama Kosong', 'Nama kategori wajib diisi!', true);
+                return;
+            }
+
+            if (categories.includes(name)) {
+                showToast('Sudah Ada', 'Kategori tersebut sudah terdaftar.', true);
+                return;
+            }
+
+            categories.push(name);
+            localStorage.setItem('fajrush_categories', JSON.stringify(categories));
+
+            try {
+                await supabaseClient.from('categories').upsert({ name: name }, { onConflict: 'name' });
+            } catch (e) {
+                console.warn('Supabase category upsert error:', e);
+            }
+
+            renderCategoryFilters();
+            renderAdminCategories();
+            closeCategoryFormModal();
+            showToast('Berhasil', `Kategori "${name}" berhasil ditambahkan.`);
+        }
+
+        async function deleteCategory(index) {
+            const removed = categories.splice(index, 1)[0];
+            localStorage.setItem('fajrush_categories', JSON.stringify(categories));
+
+            try {
+                await supabaseClient.from('categories').delete().eq('name', removed);
+            } catch (e) {
+                console.warn('Supabase category delete error:', e);
+            }
+
+            renderCategoryFilters();
+            renderAdminCategories();
+            if (currentCategory === removed) {
+                currentCategory = 'Semua';
+                renderProducts();
+            }
+            showToast('Terhapus', `Kategori "${removed}" dihapus.`);
+        }
+
+        // Admin Products Management
+        function renderAdminProducts() {
+            const tbody = document.getElementById('adminProductTableBody');
+            tbody.innerHTML = '';
+
+            products.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/40 transition';
+                tr.innerHTML = `
+                    <td class="p-3 flex items-center gap-3">
+                        <img src="${p.image}" class="w-10 h-10 rounded-lg object-cover border border-slate-700" onerror="this.src='https://placehold.co/40x40'">
+                        <div>
+                            <span class="font-bold text-white block">${p.name}</span>
+                            <span class="text-[10px] text-slate-400">ID: ${p.id}</span>
+                        </div>
+                    </td>
+                    <td class="p-3">${p.category}</td>
+                    <td class="p-3 font-semibold text-indigo-400">Rp ${p.price.toLocaleString('id-ID')}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${p.stock > 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">${p.stock} pcs</span>
+                    </td>
+                    <td class="p-3 text-right space-x-1">
+                        <button onclick="editProduct('${p.id}')" class="px-2.5 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white transition"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteProduct('${p.id}')" class="px-2.5 py-1.5 rounded-lg bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white transition"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openProductFormModal(id = null) {
+            document.getElementById('editProductId').value = '';
+            document.getElementById('prodNameInput').value = '';
+            document.getElementById('prodPriceInput').value = '';
+            document.getElementById('prodStockInput').value = '';
+            document.getElementById('prodDescInput').value = '';
+            document.getElementById('prodScriptInput').value = '';
+            document.getElementById('prodImageFile').value = '';
+            document.getElementById('productFormTitle').innerText = 'Tambah Produk Baru';
+
+            const selectEl = document.getElementById('prodCategoryInput');
+            selectEl.innerHTML = '';
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.innerText = cat;
+                selectEl.appendChild(opt);
+            });
+
+            if (id) {
+                const p = products.find(item => item.id === id);
+                if (p) {
+                    document.getElementById('editProductId').value = p.id;
+                    document.getElementById('prodNameInput').value = p.name;
+                    document.getElementById('prodCategoryInput').value = p.category;
+                    document.getElementById('prodPriceInput').value = p.price;
+                    document.getElementById('prodStockInput').value = p.stock;
+                    document.getElementById('prodDescInput').value = p.desc;
+                    document.getElementById('prodScriptInput').value = p.scriptLink;
+                    document.getElementById('productFormTitle').innerText = 'Edit Produk';
+                }
+            }
+            document.getElementById('productFormModal').classList.remove('hidden');
+            document.getElementById('productFormModal').classList.add('flex');
+        }
+
+        function closeProductFormModal() {
+            document.getElementById('productFormModal').classList.remove('flex');
+            document.getElementById('productFormModal').classList.add('hidden');
+        }
+
+        function editProduct(id) {
+            openProductFormModal(id);
+        }
+
+        function saveProductData() {
+            const id = document.getElementById('editProductId').value;
+            const name = document.getElementById('prodNameInput').value.trim();
+            const category = document.getElementById('prodCategoryInput').value;
+            const price = parseFloat(document.getElementById('prodPriceInput').value) || 0;
+            const stock = parseInt(document.getElementById('prodStockInput').value) || 0;
+            const desc = document.getElementById('prodDescInput').value.trim();
+            const scriptLink = document.getElementById('prodScriptInput').value.trim();
+            const fileInput = document.getElementById('prodImageFile');
+
+            if (!name || price <= 0) {
+                showToast('Data Belum Lengkap', 'Nama produk dan harga wajib diisi dengan benar!', true);
+                return;
+            }
+
+            const finishSave = async (imgUrl) => {
+                let savedObj;
+                if (id) {
+                    const idx = products.findIndex(p => p.id === id);
+                    if (idx !== -1) {
+                        products[idx] = {
+                            id,
+                            name,
+                            category,
+                            price,
+                            stock,
+                            desc,
+                            scriptLink,
+                            image: imgUrl || products[idx].image
+                        };
+                        savedObj = products[idx];
+                    }
+                    showToast('Sukses', 'Produk berhasil diperbarui.');
+                } else {
+                    savedObj = {
+                        id: 'prod-' + Date.now(),
+                        name,
+                        category,
+                        price,
+                        stock,
+                        desc,
+                        scriptLink,
+                        image: imgUrl || 'https://placehold.co/400x300/4f46e5/ffffff?text=Fajrush+Store'
+                    };
+                    products.push(savedObj);
+                    showToast('Sukses', 'Produk baru berhasil ditambahkan.');
+                }
+
+                localStorage.setItem('fajrush_products', JSON.stringify(products));
+
+                try {
+                    await supabaseClient.from('products').upsert({
+                        id: savedObj.id,
+                        name: savedObj.name,
+                        category: savedObj.category,
+                        price: savedObj.price,
+                        stock: savedObj.stock,
+                        image: savedObj.image,
+                        script_link: savedObj.scriptLink,
+                        description: savedObj.desc
+                    });
+                } catch (e) {
+                    console.warn('Supabase product upsert error:', e);
+                }
+
+                renderProducts();
+                renderAdminProducts();
+                closeProductFormModal();
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    finishSave(e.target.result);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                finishSave(null);
+            }
+        }
+
+        async function deleteProduct(id) {
+            products = products.filter(p => p.id !== id);
+            localStorage.setItem('fajrush_products', JSON.stringify(products));
+
+            try {
+                await supabaseClient.from('products').delete().eq('id', id);
+            } catch (e) {
+                console.warn('Supabase product delete error:', e);
+            }
+
+            renderProducts();
+            renderAdminProducts();
+            showToast('Terhapus', 'Produk berhasil dihapus dari store.');
+        }
+
+        // Admin Vouchers Management
+        function renderAdminVouchers() {
+            const tbody = document.getElementById('adminVoucherTableBody');
+            tbody.innerHTML = '';
+
+            vouchers.forEach(v => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/40 transition';
+                let discountLabel = v.type === 'percent' ? `${v.value}%` : `Rp ${v.value.toLocaleString('id-ID')}`;
+                tr.innerHTML = `
+                    <td class="p-3 font-mono font-bold text-white">${v.code}</td>
+                    <td class="p-3 text-indigo-400 font-semibold">${discountLabel} (${v.type})</td>
+                    <td class="p-3 text-slate-400">${v.startDate} s/d ${v.endDate}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${v.active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'}">${v.active ? 'Aktif' : 'Nonaktif'}</span>
+                    </td>
+                    <td class="p-3 text-right space-x-1">
+                        <button onclick="toggleVoucher('${v.id}')" class="px-2.5 py-1.5 rounded-lg bg-amber-600/20 text-amber-400 hover:bg-amber-600 hover:text-white transition" title="Toggle Status"><i class="fa-solid fa-power-off"></i></button>
+                        <button onclick="deleteVoucher('${v.id}')" class="px-2.5 py-1.5 rounded-lg bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white transition"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openVoucherFormModal() {
+            document.getElementById('vCodeInput').value = '';
+            document.getElementById('vValueInput').value = '';
+            document.getElementById('vStartInput').value = '';
+            document.getElementById('vEndInput').value = '';
+            document.getElementById('voucherFormModal').classList.remove('hidden');
+            document.getElementById('voucherFormModal').classList.add('flex');
+        }
+
+        function closeVoucherFormModal() {
+            document.getElementById('voucherFormModal').classList.remove('flex');
+            document.getElementById('voucherFormModal').classList.add('hidden');
+        }
+
+        async function saveVoucherData() {
+            const code = document.getElementById('vCodeInput').value.trim().toUpperCase();
+            const type = document.getElementById('vTypeInput').value;
+            const value = parseFloat(document.getElementById('vValueInput').value) || 0;
+            const startDate = document.getElementById('vStartInput').value || '2026-01-01';
+            const endDate = document.getElementById('vEndInput').value || '2026-12-31';
+
+            if (!code || value <= 0) {
+                showToast('Data Tidak Valid', 'Kode voucher dan nilai potongan wajib diisi!', true);
+                return;
+            }
+
+            const newV = {
+                id: 'v-' + Date.now(),
+                code,
+                type,
+                value,
+                startDate,
+                endDate,
+                active: true
+            };
+            vouchers.push(newV);
+            localStorage.setItem('fajrush_vouchers', JSON.stringify(vouchers));
+
+            try {
+                await supabaseClient.from('vouchers').upsert({
+                    id: newV.id,
+                    code: newV.code,
+                    type: newV.type,
+                    value: newV.value,
+                    start_date: newV.startDate,
+                    end_date: newV.endDate,
+                    active: newV.active
+                });
+            } catch (e) {
+                console.warn('Supabase voucher upsert error:', e);
+            }
+
+            renderVouchers();
+            renderAdminVouchers();
+            closeVoucherFormModal();
+            showToast('Sukses', 'Voucher diskon berhasil ditambahkan.');
+        }
+
+        async function toggleVoucher(id) {
+            const v = vouchers.find(item => item.id === id);
+            if (v) {
+                v.active = !v.active;
+                localStorage.setItem('fajrush_vouchers', JSON.stringify(vouchers));
+
+                try {
+                    await supabaseClient.from('vouchers').upsert({
+                        id: v.id,
+                        code: v.code,
+                        type: v.type,
+                        value: v.value,
+                        start_date: v.startDate,
+                        end_date: v.endDate,
+                        active: v.active
+                    });
+                } catch (e) {
+                    console.warn('Supabase voucher toggle error:', e);
+                }
+
+                renderVouchers();
+                renderAdminVouchers();
+                showToast('Status Diubah', `Voucher ${v.code} status diperbarui.`);
+            }
+        }
+
+        async function deleteVoucher(id) {
+            vouchers = vouchers.filter(v => v.id !== id);
+            localStorage.setItem('fajrush_vouchers', JSON.stringify(vouchers));
+
+            try {
+                await supabaseClient.from('vouchers').delete().eq('id', id);
+            } catch (e) {
+                console.warn('Supabase voucher delete error:', e);
+            }
+
+            renderVouchers();
+            renderAdminVouchers();
+            showToast('Terhapus', 'Voucher berhasil dihapus.');
+        }
+
+        // Admin QRIS Setting
+        let newQrisBase64 = null;
+        function previewNewQris(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    newQrisBase64 = e.target.result;
+                    document.getElementById('adminQrisPreviewImg').src = newQrisBase64;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function saveNewQris() {
+            if (!newQrisBase64) {
+                showToast('Belum Pilih Gambar', 'Pilih file gambar QRIS terlebih dahulu dari perangkat.', true);
+                return;
+            }
+            qrisImageUrl = newQrisBase64;
+            localStorage.setItem('fajrush_qris', qrisImageUrl);
+
+            try {
+                await supabaseClient.from('settings').upsert({ key: 'qris_url', value: qrisImageUrl }, { onConflict: 'key' });
+            } catch (e) {
+                console.warn('Supabase settings upsert error:', e);
+            }
+
+            showToast('QRIS Diperbarui', 'Gambar QRIS pembayaran berhasil diganti.');
+        }
+
+        // Admin Transactions
+        function renderAdminTransactions() {
+            const tbody = document.getElementById('adminTransactionTableBody');
+            tbody.innerHTML = '';
+
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500">Belum ada transaksi masuk.</td></tr>';
+                return;
+            }
+
+            transactions.forEach(trx => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/40 transition';
+                tr.innerHTML = `
+                    <td class="p-3 font-mono text-slate-400">${trx.time}</td>
+                    <td class="p-3 font-bold text-white">${trx.productName}</td>
+                    <td class="p-3 text-indigo-300 font-mono">${trx.contact}</td>
+                    <td class="p-3 font-extrabold text-emerald-400">Rp ${trx.total.toLocaleString('id-ID')}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">${trx.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function clearTransactions() {
+            transactions = [];
+            localStorage.removeItem('fajrush_transactions');
+
+            try {
+                await supabaseClient.from('transactions').delete().neq('id', '0');
+            } catch (e) {
+                console.warn('Supabase clear transactions error:', e);
+            }
+
+            renderAdminTransactions();
+            showToast('Dibersihkan', 'Riwayat transaksi berhasil dikosongkan.');
+        }
+    </script>
+</body>
+</html>
