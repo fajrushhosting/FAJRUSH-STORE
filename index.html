@@ -492,8 +492,8 @@
     </div>
 
     <!-- ================= ADD CATEGORY MODAL ================= -->
-    <div id="categoryFormModal" class="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div id="categoryFormModal" class="fixed inset-0 z-[60] bg-black/85 backdrop-blur-sm hidden items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-5 sm:p-6 relative shadow-2xl my-auto">
             <button onclick="closeCategoryFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -511,8 +511,8 @@
     </div>
 
     <!-- ================= ADD/EDIT PRODUCT MODAL ================= -->
-    <div id="productFormModal" class="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 relative shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
+    <div id="productFormModal" class="fixed inset-0 z-[60] bg-black/85 backdrop-blur-sm hidden items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-5 sm:p-6 relative shadow-2xl my-4 sm:my-auto">
             <button onclick="closeProductFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -563,8 +563,8 @@
     </div>
 
     <!-- ================= ADD VOUCHER MODAL ================= -->
-    <div id="voucherFormModal" class="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div id="voucherFormModal" class="fixed inset-0 z-[60] bg-black/85 backdrop-blur-sm hidden items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-5 sm:p-6 relative shadow-2xl my-auto">
             <button onclick="closeVoucherFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -603,7 +603,7 @@
     </div>
 
     <!-- Custom Toast Notification -->
-    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-[80] transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
         <div id="toastIcon" class="w-8 h-8 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center">
             <i class="fa-solid fa-bell"></i>
         </div>
@@ -1248,6 +1248,13 @@
         function openAdminModal() {
             document.getElementById('adminModal').classList.remove('hidden');
             document.getElementById('adminModal').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('flex');
+            document.getElementById('adminModal').classList.add('hidden');
+            document.body.style.overflow = '';
         }
 
         function closeAdminModal() {
