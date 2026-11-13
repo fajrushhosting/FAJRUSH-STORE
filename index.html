@@ -72,12 +72,16 @@
             </div>
 
             <!-- Nav Actions -->
-            <div class="flex items-center gap-3">
-                <button onclick="checkAdminAccess()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-400 hover:text-indigo-300 border border-slate-700 text-xs sm:text-sm font-semibold transition-all flex items-center gap-2">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="openOrderAccessModal()" class="px-3 sm:px-3.5 py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 text-xs sm:text-sm font-semibold transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-file-code"></i>
+                    <span>Akses Script</span>
+                </button>
+                <button onclick="checkAdminAccess()" class="px-3 sm:px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-400 hover:text-indigo-300 border border-slate-700 text-xs sm:text-sm font-semibold transition-all flex items-center gap-2">
                     <i class="fa-solid fa-shield-halved"></i>
                     <span class="hidden sm:inline">Admin Panel</span>
                 </button>
-                <a href="https://t.me/fajrushstore" target="_blank" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold transition-all shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+                <a href="https://t.me/fajrushstore" target="_blank" class="px-3 sm:px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold transition-all shadow-lg shadow-indigo-600/30 flex items-center gap-2">
                     <i class="fa-brands fa-telegram text-base"></i>
                     <span class="hidden sm:inline">Admin TG</span>
                 </a>
@@ -324,13 +328,60 @@
                 </div>
 
                 <!-- Receipt Preview Box -->
-                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 text-left font-mono text-[11px] text-slate-300 mb-6 max-h-44 overflow-y-auto whitespace-pre-line" id="receiptTextPreview">
+                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 text-left font-mono text-[11px] text-slate-300 mb-4 max-h-40 overflow-y-auto whitespace-pre-line" id="receiptTextPreview">
                     <!-- Receipt generated via JS -->
+                </div>
+
+                <!-- Script Bot Confirmation Notice (Only shown for Script Bot products) -->
+                <div id="step3ScriptNotice" class="hidden bg-indigo-950/70 border border-indigo-500/40 rounded-2xl p-3.5 mb-4 text-left">
+                    <div class="text-xs font-bold text-indigo-300 flex items-center gap-1.5 mb-1">
+                        <i class="fa-solid fa-lock"></i> Akses File Script Bot di Website
+                    </div>
+                    <p class="text-[11px] text-slate-300 leading-relaxed mb-2.5">
+                        Khusus produk <strong>Script Bot</strong>, setelah konfirmasi ke Telegram Admin, Anda dapat mengunduh file script langsung di website melalui menu <strong>Akses Script</strong> setelah Admin menyetujui pesanan Anda.
+                    </p>
+                    <button type="button" onclick="openOrderAccessModalFromStep3()" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 text-xs font-bold transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-file-arrow-down"></i> Cek Status & Akses File Script
+                    </button>
                 </div>
 
                 <a id="telegramRedirectBtn" href="https://t.me/fajrushstore" target="_blank" onclick="completeOrderFinal()" class="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
                     <i class="fa-brands fa-telegram text-lg"></i> Kirim Struk ke Telegram Admin (t.me/fajrushstore)
                 </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ORDER STATUS & SCRIPT ACCESS MODAL (BUYER) ================= -->
+    <div id="orderAccessModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-5 sm:p-7 relative shadow-2xl my-4 sm:my-8">
+            <button onclick="closeOrderAccessModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-9 h-9 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="mb-5 pr-8">
+                <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-file-code text-emerald-400"></i> Akses File Script Bot
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">
+                    Khusus pembelian produk <strong>Script Bot</strong>. File script otomatis terbuka setelah dikonfirmasi oleh Admin di Admin Panel.
+                </p>
+            </div>
+
+            <!-- Search Order Form -->
+            <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-3.5 mb-5">
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1.5">Cari ID Transaksi atau Kontak (WA / Telegram)</label>
+                <div class="flex gap-2">
+                    <input type="text" id="orderLookupInput" placeholder="Contoh: TRX-123456 atau 0812..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+                    <button type="button" onclick="refreshAndRenderOrders(true)" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-1.5 shrink-0">
+                        <i class="fa-solid fa-rotate"></i> Cek
+                    </button>
+                </div>
+            </div>
+
+            <!-- Orders List Container -->
+            <div id="buyerOrdersContainer" class="space-y-3 max-h-[55vh] overflow-y-auto pr-1">
+                <!-- Populated via JS -->
             </div>
         </div>
     </div>
@@ -566,12 +617,12 @@
                     <table class="w-full text-left text-xs text-slate-300">
                         <thead class="bg-slate-800 uppercase text-slate-400 font-semibold">
                             <tr>
-                                <th class="p-3 rounded-l-xl">Waktu</th>
+                                <th class="p-3 rounded-l-xl">Waktu / ID</th>
                                 <th class="p-3">Produk</th>
                                 <th class="p-3">Kontak Pembeli</th>
                                 <th class="p-3">Total</th>
                                 <th class="p-3">Bukti</th>
-                                <th class="p-3 rounded-r-xl">Status</th>
+                                <th class="p-3 rounded-r-xl text-right">Status & Konfirmasi</th>
                             </tr>
                         </thead>
                         <tbody id="adminTransactionTableBody" class="divide-y divide-slate-800">
@@ -654,6 +705,7 @@
                 <div>
                     <label class="block font-semibold text-slate-300 mb-1">File Script Bot / Aplikasi (Ambil dari Perangkat)</label>
                     <input type="file" id="prodScriptFile" class="w-full text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-indigo-400 hover:file:bg-slate-700 cursor-pointer">
+                    <span id="currentScriptFileLabel" class="hidden text-[11px] text-emerald-400 mt-1 block"></span>
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-300 mb-1">Atau Link Download / Akses Alternatif</label>
@@ -870,6 +922,11 @@
         let currentDiscountAmount = 0;
         let paymentTimerInterval = null;
         let uploadedProofBase64 = null;
+        let currentCompletedOrderId = null;
+
+        function isScriptBotProduct(category) {
+            return Boolean(category && category.toLowerCase().includes('script'));
+        }
 
         // Initialize App & Sync Supabase
         document.addEventListener('DOMContentLoaded', async () => {
@@ -891,16 +948,22 @@
                 // Fetch Products
                 const { data: prodData, error: prodErr } = await supabaseClient.from('products').select('*');
                 if (!prodErr && prodData) {
-                    products = prodData.map(p => ({
-                        id: p.id,
-                        name: p.name,
-                        category: p.category,
-                        price: Number(p.price),
-                        stock: Number(p.stock),
-                        image: p.image || 'https://placehold.co/400x300/4f46e5/ffffff?text=Produk+Fajrush',
-                        scriptLink: p.script_link || p.scriptLink || '',
-                        desc: p.description || p.desc || ''
-                    }));
+                    const localProds = JSON.parse(localStorage.getItem('fajrush_products')) || [];
+                    products = prodData.map(p => {
+                        const localMatch = localProds.find(lp => lp.id === p.id);
+                        return {
+                            id: p.id,
+                            name: p.name,
+                            category: p.category,
+                            price: Number(p.price),
+                            stock: Number(p.stock),
+                            image: p.image || 'https://placehold.co/400x300/4f46e5/ffffff?text=Produk+Fajrush',
+                            scriptLink: p.script_link || p.scriptLink || '',
+                            scriptFileName: p.script_file_name || p.scriptFileName || (localMatch ? localMatch.scriptFileName : ''),
+                            scriptFileData: p.script_file_data || p.scriptFileData || (localMatch ? localMatch.scriptFileData : ''),
+                            desc: p.description || p.desc || ''
+                        };
+                    });
                     localStorage.setItem('fajrush_products', JSON.stringify(products));
                 }
 
@@ -922,15 +985,22 @@
                 // Fetch Transactions
                 const { data: tData, error: tErr } = await supabaseClient.from('transactions').select('*');
                 if (!tErr && tData) {
-                    transactions = tData.map(t => ({
-                        id: t.id,
-                        time: t.time,
-                        productName: t.product_name || t.productName,
-                        contact: t.contact,
-                        total: Number(t.total),
-                        proofImage: t.proof_image || t.proofImage || '',
-                        status: t.status || 'Berhasil'
-                    }));
+                    const localTrx = JSON.parse(localStorage.getItem('fajrush_transactions')) || [];
+                    transactions = tData.map(t => {
+                        const localMatch = localTrx.find(lt => lt.id === t.id);
+                        const matchedProd = products.find(p => p.id === (t.product_id || (localMatch && localMatch.productId)) || p.name === (t.product_name || t.productName));
+                        return {
+                            id: t.id,
+                            time: t.time,
+                            productId: t.product_id || t.productId || (localMatch ? localMatch.productId : (matchedProd ? matchedProd.id : '')),
+                            productName: t.product_name || t.productName,
+                            productCategory: t.product_category || t.productCategory || (localMatch ? localMatch.productCategory : (matchedProd ? matchedProd.category : '')),
+                            contact: t.contact,
+                            total: Number(t.total),
+                            proofImage: t.proof_image || t.proofImage || '',
+                            status: t.status || 'Berhasil'
+                        };
+                    });
                     localStorage.setItem('fajrush_transactions', JSON.stringify(transactions));
                 }
 
@@ -1337,24 +1407,37 @@
             const basePrice = Number(selectedProduct.price);
             const finalTotal = Math.max(0, basePrice - currentDiscountAmount) + currentUniqueCode;
             const orderTime = new Date().toLocaleString('id-ID');
+            const isScriptBot = isScriptBotProduct(selectedProduct.category);
 
             const newTrx = {
                 id: 'TRX-' + Math.floor(Math.random() * 900000 + 100000),
                 time: orderTime,
+                productId: selectedProduct.id,
                 productName: selectedProduct.name,
+                productCategory: selectedProduct.category,
                 contact: contact,
                 total: finalTotal,
                 proofImage: uploadedProofBase64,
-                status: 'Berhasil'
+                status: isScriptBot ? 'Menunggu Konfirmasi' : 'Berhasil'
             };
+            currentCompletedOrderId = newTrx.id;
             transactions.unshift(newTrx);
             localStorage.setItem('fajrush_transactions', JSON.stringify(transactions));
+
+            // Save buyer order ID locally for easy lookup
+            const myOrderIds = JSON.parse(localStorage.getItem('fajrush_my_orders')) || [];
+            if (!myOrderIds.includes(newTrx.id)) {
+                myOrderIds.unshift(newTrx.id);
+                localStorage.setItem('fajrush_my_orders', JSON.stringify(myOrderIds));
+            }
 
             try {
                 const { error } = await supabaseClient.from('transactions').insert([{
                     id: newTrx.id,
                     time: newTrx.time,
+                    product_id: newTrx.productId,
                     product_name: newTrx.productName,
+                    product_category: newTrx.productCategory,
                     contact: newTrx.contact,
                     total: newTrx.total,
                     proof_image: newTrx.proofImage,
@@ -1367,6 +1450,7 @@
                         product_name: newTrx.productName,
                         contact: newTrx.contact,
                         total: newTrx.total,
+                        proof_image: newTrx.proofImage,
                         status: newTrx.status
                     }]);
                 }
@@ -1387,6 +1471,8 @@
                     stock: selectedProduct.stock,
                     image: selectedProduct.image,
                     script_link: selectedProduct.scriptLink,
+                    script_file_name: selectedProduct.scriptFileName || '',
+                    script_file_data: selectedProduct.scriptFileData || '',
                     description: selectedProduct.desc
                 });
             } catch (e) {
@@ -1399,9 +1485,14 @@
             // Send Payment Proof Image + Receipt directly to Telegram Bot (@bieiwjwkwjsk_bot)
             await sendPaymentProofToTelegramBot(newTrx, selectedProduct, basePrice, currentDiscountAmount, currentUniqueCode, uploadedProofBase64);
 
+            const accessInfoLine = isScriptBot
+                ? `🔑 Akses Script: Menunggu Konfirmasi Admin (Cek menu Akses Script di website)`
+                : `🔑 Akses / File: ${selectedProduct.scriptLink}`;
+
             const receiptText = `*STRUK PEMBELIAN FAJRUSH STORE*\n\n` +
                 `🆔 ID Transaksi: ${newTrx.id}\n` +
                 `📦 Produk: ${selectedProduct.name}\n` +
+                `🏷️ Kategori: ${selectedProduct.category}\n` +
                 `💵 Harga: Rp ${basePrice.toLocaleString('id-ID')}\n` +
                 `🏷️ Diskon: -Rp ${currentDiscountAmount.toLocaleString('id-ID')}\n` +
                 `🔢 Kode Unik: +Rp ${currentUniqueCode}\n` +
@@ -1409,11 +1500,19 @@
                 `📱 Kontak Pembeli: ${contact}\n` +
                 `📅 Waktu: ${orderTime}\n` +
                 `📸 Bukti Transfer: Sudah dikirim ke Bot Telegram & Admin Panel\n` +
-                `🔑 Akses / File: ${selectedProduct.scriptLink}\n\n` +
+                `${accessInfoLine}\n\n` +
                 `_Terima kasih telah berbelanja di Fajrush Store!_`;
 
             document.getElementById('step3ProofImg').src = uploadedProofBase64;
             document.getElementById('receiptTextPreview').innerText = receiptText;
+
+            const scriptNoticeEl = document.getElementById('step3ScriptNotice');
+            if (isScriptBot) {
+                scriptNoticeEl.classList.remove('hidden');
+            } else {
+                scriptNoticeEl.classList.add('hidden');
+            }
+
             const tgUrl = `https://t.me/fajrushstore?text=` + encodeURIComponent(receiptText);
             document.getElementById('telegramRedirectBtn').href = tgUrl;
 
@@ -1422,6 +1521,181 @@
 
             // Direct redirect to Telegram Admin
             window.location.href = tgUrl;
+        }
+
+        function openOrderAccessModalFromStep3() {
+            closeCheckoutModal();
+            openOrderAccessModal(currentCompletedOrderId);
+        }
+
+        // ================= BUYER SCRIPT ACCESS & ORDER CHECKER =================
+        async function openOrderAccessModal(prefillQuery = '') {
+            const modal = document.getElementById('orderAccessModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            const input = document.getElementById('orderLookupInput');
+            if (prefillQuery) {
+                input.value = prefillQuery;
+            }
+            await refreshAndRenderOrders(false);
+        }
+
+        function closeOrderAccessModal() {
+            const modal = document.getElementById('orderAccessModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function refreshAndRenderOrders(showNotify = false) {
+            const container = document.getElementById('buyerOrdersContainer');
+            container.innerHTML = `
+                <div class="text-center py-6 text-xs text-slate-400">
+                    <i class="fa-solid fa-spinner animate-spin text-indigo-400 text-lg mb-2 block"></i>
+                    Memeriksa status konfirmasi dari server...
+                </div>
+            `;
+
+            await syncFromSupabase();
+
+            const query = document.getElementById('orderLookupInput').value.trim().toLowerCase();
+            const myOrderIds = JSON.parse(localStorage.getItem('fajrush_my_orders')) || [];
+
+            let matchedOrders = [];
+            if (query) {
+                matchedOrders = transactions.filter(t =>
+                    (t.id && t.id.toLowerCase().includes(query)) ||
+                    (t.contact && t.contact.toLowerCase().includes(query))
+                );
+            } else {
+                matchedOrders = transactions.filter(t => myOrderIds.includes(t.id));
+            }
+
+            if (showNotify) {
+                showToast('Status Diperbarui', 'Data pesanan terbaru telah dimuat.');
+            }
+
+            if (matchedOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-6 text-center">
+                        <div class="w-12 h-12 rounded-full bg-slate-800 text-slate-500 flex items-center justify-center mx-auto mb-3 text-lg">
+                            <i class="fa-solid fa-folder-open"></i>
+                        </div>
+                        <h4 class="text-sm font-bold text-white">Belum Ada Pesanan Ditemukan</h4>
+                        <p class="text-xs text-slate-400 mt-1">Masukkan <strong>ID Transaksi</strong> (contoh: TRX-123456) atau <strong>Nomor WA / Username Telegram</strong> yang digunakan saat checkout.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = matchedOrders.map(trx => {
+                const prod = products.find(p => p.id === trx.productId || p.name === trx.productName);
+                const category = trx.productCategory || (prod ? prod.category : '');
+                const isScriptBot = isScriptBotProduct(category);
+                const isConfirmed = trx.status === 'Terkonfirmasi';
+
+                if (!isScriptBot) {
+                    return `
+                        <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-4 space-y-2">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-[11px] font-mono font-bold text-indigo-400">${trx.id}</span>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">${trx.status}</span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white">${trx.productName}</h4>
+                            <p class="text-[11px] text-slate-400">
+                                Kategori: <strong>${category || 'Produk Digital'}</strong> • Produk non-Script Bot diproses & dikirim langsung via Telegram Admin (<a href="https://t.me/fajrushstore" target="_blank" class="text-indigo-400 underline">t.me/fajrushstore</a>).
+                            </p>
+                        </div>
+                    `;
+                }
+
+                if (isConfirmed) {
+                    return `
+                        <div class="bg-gradient-to-br from-emerald-950/50 to-slate-900 border border-emerald-500/40 rounded-2xl p-4 space-y-3 shadow-lg">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-[11px] font-mono font-bold text-emerald-300">${trx.id}</span>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                    <i class="fa-solid fa-circle-check"></i> Dikonfirmasi Admin
+                                </span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold uppercase text-indigo-400">${category}</span>
+                                <h4 class="text-sm font-bold text-white">${trx.productName}</h4>
+                                <span class="text-[11px] text-slate-400 block mt-0.5">${trx.time}</span>
+                            </div>
+                            <button type="button" onclick="accessPurchasedScript('${trx.id}')" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-download"></i> Download / Akses File Script Sekarang
+                            </button>
+                        </div>
+                    `;
+                }
+
+                const confirmMsg = encodeURIComponent(`Halo Admin Fajrush Store, mohon konfirmasi pesanan Script Bot saya:\n🆔 ID Transaksi: ${trx.id}\n📦 Produk: ${trx.productName}\n📱 Kontak: ${trx.contact}`);
+                return `
+                    <div class="bg-slate-800/70 border border-amber-500/40 rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-[11px] font-mono font-bold text-amber-300">${trx.id}</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                <i class="fa-solid fa-clock"></i> Menunggu Konfirmasi Admin
+                            </span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase text-indigo-400">${category}</span>
+                            <h4 class="text-sm font-bold text-white">${trx.productName}</h4>
+                            <span class="text-[11px] text-slate-400 block mt-0.5">${trx.time}</span>
+                        </div>
+                        <div class="bg-slate-900/80 border border-slate-700 rounded-xl p-2.5 text-[11px] text-slate-300 leading-relaxed">
+                            <i class="fa-solid fa-lock text-amber-400 mr-1"></i> File script terkunci sampai Admin mengonfirmasi pembayaran Anda di Admin Panel.
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" onclick="refreshAndRenderOrders(true)" class="py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-rotate"></i> Refresh Status
+                            </button>
+                            <a href="https://t.me/fajrushstore?text=${confirmMsg}" target="_blank" class="py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center justify-center gap-1.5">
+                                <i class="fa-brands fa-telegram"></i> Chat Admin
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function accessPurchasedScript(trxId) {
+            const trx = transactions.find(t => t.id === trxId);
+            if (!trx || trx.status !== 'Terkonfirmasi') {
+                showToast('Belum Dikonfirmasi', 'Pesanan ini belum dikonfirmasi oleh Admin.', true);
+                return;
+            }
+
+            const prod = products.find(p => p.id === trx.productId || p.name === trx.productName);
+            if (!prod) {
+                showToast('Produk Tidak Ditemukan', 'Data file produk tidak ditemukan. Hubungi Admin TG.', true);
+                return;
+            }
+
+            if (prod.scriptFileData) {
+                const link = document.createElement('a');
+                link.href = prod.scriptFileData;
+                link.download = prod.scriptFileName || `${prod.name.replace(/[^a-zA-Z0-9_-]/g, '_')}.zip`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('Mengunduh Script', `File "${link.download}" sedang diunduh ke perangkat Anda!`);
+                return;
+            }
+
+            if (prod.scriptLink && prod.scriptLink.startsWith('http')) {
+                window.open(prod.scriptLink, '_blank');
+                showToast('Membuka Akses Script', 'Mengarahkan ke link file script...');
+                return;
+            }
+
+            if (prod.scriptLink) {
+                navigator.clipboard?.writeText(prod.scriptLink);
+                showToast('Akses Disalin', `Info akses: ${prod.scriptLink}`);
+            } else {
+                showToast('Hubungi Admin', 'Silakan hubungi t.me/fajrushstore untuk pengambilan file.', true);
+            }
         }
 
         function dataURLtoBlob(dataURL) {
@@ -1625,6 +1899,9 @@
 
             document.getElementById('prodImageFile').value = '';
             document.getElementById('prodScriptFile').value = '';
+            const fileLabel = document.getElementById('currentScriptFileLabel');
+            fileLabel.classList.add('hidden');
+            fileLabel.innerText = '';
 
             if (productId) {
                 const prod = products.find(p => p.id === productId);
@@ -1636,6 +1913,10 @@
                 document.getElementById('prodStockInput').value = prod.stock;
                 document.getElementById('prodScriptInput').value = prod.scriptLink || '';
                 document.getElementById('prodDescInput').value = prod.desc || '';
+                if (prod.scriptFileName) {
+                    fileLabel.classList.remove('hidden');
+                    fileLabel.innerHTML = `<i class="fa-solid fa-file-zipper"></i> File terpasang: <strong>${prod.scriptFileName}</strong>`;
+                }
             } else {
                 document.getElementById('productFormTitle').innerText = 'Tambah Produk Baru';
                 document.getElementById('editProductId').value = '';
@@ -1681,6 +1962,8 @@
 
             const existingProd = editId ? products.find(p => p.id === editId) : null;
             let image = existingProd ? existingProd.image : 'https://placehold.co/400x300/4f46e5/ffffff?text=' + encodeURIComponent(name.slice(0, 15));
+            let scriptFileName = existingProd ? (existingProd.scriptFileName || '') : '';
+            let scriptFileData = existingProd ? (existingProd.scriptFileData || '') : '';
 
             const imageFile = document.getElementById('prodImageFile').files[0];
             if (imageFile) {
@@ -1689,8 +1972,11 @@
 
             const scriptFile = document.getElementById('prodScriptFile').files[0];
             if (scriptFile) {
-                const fileDataUrl = await readFileAsDataURL(scriptFile);
-                scriptLink = `File: ${scriptFile.name} (${fileDataUrl.slice(0, 40)}... - Hubungi Admin untuk akses file)`;
+                scriptFileName = scriptFile.name;
+                scriptFileData = await readFileAsDataURL(scriptFile);
+                if (!scriptLink) {
+                    scriptLink = `File: ${scriptFile.name}`;
+                }
             }
 
             const productObj = {
@@ -1701,6 +1987,8 @@
                 stock: isNaN(stock) ? 0 : stock,
                 image,
                 scriptLink: scriptLink || 'https://t.me/fajrushstore',
+                scriptFileName,
+                scriptFileData,
                 desc
             };
 
@@ -1714,7 +2002,7 @@
             localStorage.setItem('fajrush_products', JSON.stringify(products));
 
             try {
-                await supabaseClient.from('products').upsert({
+                const { error } = await supabaseClient.from('products').upsert({
                     id: productObj.id,
                     name: productObj.name,
                     category: productObj.category,
@@ -1722,8 +2010,22 @@
                     stock: productObj.stock,
                     image: productObj.image,
                     script_link: productObj.scriptLink,
+                    script_file_name: productObj.scriptFileName,
+                    script_file_data: productObj.scriptFileData,
                     description: productObj.desc
                 });
+                if (error) {
+                    await supabaseClient.from('products').upsert({
+                        id: productObj.id,
+                        name: productObj.name,
+                        category: productObj.category,
+                        price: productObj.price,
+                        stock: productObj.stock,
+                        image: productObj.image,
+                        script_link: productObj.scriptLink,
+                        description: productObj.desc
+                    });
+                }
             } catch (e) {
                 console.warn('Supabase product upsert error:', e);
             }
@@ -2026,18 +2328,72 @@
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-800/40 transition';
                 const proofBtn = t.proofImage
-                    ? `<button type="button" onclick="openProofPreviewModal(${idx})" class="px-2.5 py-1 rounded-lg bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white text-[10px] font-bold transition flex items-center gap-1"><i class="fa-solid fa-image"></i> Lihat</button>`
+                    ? `<button type="button" onclick="openProofPreviewModal(${idx})" class="px-2.5 py-1 rounded-lg bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white text-[10px] font-bold transition inline-flex items-center gap-1"><i class="fa-solid fa-image"></i> Lihat</button>`
                     : `<span class="text-[10px] text-slate-500">-</span>`;
+
+                const prod = products.find(p => p.id === t.productId || p.name === t.productName);
+                const category = t.productCategory || (prod ? prod.category : '');
+                const isScriptBot = isScriptBotProduct(category);
+                const isPending = t.status === 'Menunggu Konfirmasi';
+
+                let statusActionHtml = '';
+                if (isScriptBot && isPending) {
+                    statusActionHtml = `
+                        <div class="flex flex-col items-end gap-1.5">
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300">Menunggu Konfirmasi</span>
+                            <button type="button" onclick="confirmScriptTransaction('${t.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold transition shadow flex items-center gap-1">
+                                <i class="fa-solid fa-check"></i> Konfirmasi Akses
+                            </button>
+                        </div>
+                    `;
+                } else if (isScriptBot && t.status === 'Terkonfirmasi') {
+                    statusActionHtml = `
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 inline-flex items-center gap-1">
+                            <i class="fa-solid fa-circle-check"></i> Terkonfirmasi
+                        </span>
+                    `;
+                } else {
+                    statusActionHtml = `
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">${t.status}</span>
+                    `;
+                }
+
                 tr.innerHTML = `
-                    <td class="p-3 text-slate-400">${t.time}</td>
-                    <td class="p-3 font-bold text-white">${t.productName}</td>
+                    <td class="p-3 text-slate-400">
+                        <span class="block text-[10px] font-mono text-indigo-400 font-bold">${t.id || '-'}</span>
+                        <span>${t.time}</span>
+                    </td>
+                    <td class="p-3">
+                        <span class="font-bold text-white block">${t.productName}</span>
+                        ${category ? `<span class="text-[10px] text-slate-400">${category}</span>` : ''}
+                    </td>
                     <td class="p-3 text-indigo-300">${t.contact}</td>
                     <td class="p-3 font-semibold text-emerald-400">Rp ${Number(t.total).toLocaleString('id-ID')}</td>
                     <td class="p-3">${proofBtn}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">${t.status}</span></td>
+                    <td class="p-3 text-right">${statusActionHtml}</td>
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        async function confirmScriptTransaction(trxId) {
+            const idx = transactions.findIndex(t => t.id === trxId);
+            if (idx === -1) return;
+
+            transactions[idx].status = 'Terkonfirmasi';
+            localStorage.setItem('fajrush_transactions', JSON.stringify(transactions));
+
+            try {
+                await supabaseClient
+                    .from('transactions')
+                    .update({ status: 'Terkonfirmasi' })
+                    .eq('id', trxId);
+            } catch (e) {
+                console.warn('Supabase confirm transaction error:', e);
+            }
+
+            renderAdminTransactions();
+            showToast('Pesanan Dikonfirmasi', `Akses file script untuk ${transactions[idx].id} telah dibuka bagi pembeli!`);
         }
 
         function openProofPreviewModal(idx) {
