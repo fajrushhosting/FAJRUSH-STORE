@@ -73,9 +73,10 @@
 
             <!-- Nav Actions -->
             <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
-                <button type="button" onclick="openOrderAccessModal()" class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 text-[11px] sm:text-sm font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-file-code"></i>
-                    <span>Akses Script</span>
+                <button type="button" onclick="openOrderAccessModal()" title="Akses File Script & Link Channel Reseller" class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 text-[11px] sm:text-sm font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-key"></i>
+                    <span class="sm:hidden">Akses</span>
+                    <span class="hidden sm:inline">Akses Script & Reseller</span>
                 </button>
                 <button type="button" onclick="checkAdminAccess()" title="Admin Panel" class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-400 hover:text-indigo-300 border border-slate-700 text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 whitespace-nowrap">
                     <i class="fa-solid fa-shield-halved"></i>
@@ -332,16 +333,16 @@
                     <!-- Receipt generated via JS -->
                 </div>
 
-                <!-- Script Bot Confirmation Notice (Only shown for Script Bot products) -->
+                <!-- Script Bot & Reseller Panel Confirmation Notice -->
                 <div id="step3ScriptNotice" class="hidden bg-indigo-950/70 border border-indigo-500/40 rounded-2xl p-3.5 mb-4 text-left">
                     <div class="text-xs font-bold text-indigo-300 flex items-center gap-1.5 mb-1">
-                        <i class="fa-solid fa-lock"></i> Akses File Script Bot di Website
+                        <i class="fa-solid fa-lock"></i> Akses File Script & Channel Reseller di Website
                     </div>
                     <p class="text-[11px] text-slate-300 leading-relaxed mb-2.5">
-                        Khusus produk <strong>Script Bot</strong>, setelah konfirmasi ke Telegram Admin, Anda dapat mengunduh file script langsung di website melalui menu <strong>Akses Script</strong> setelah Admin menyetujui pesanan Anda.
+                        Khusus produk <strong>Script Bot</strong> & <strong>Reseller Panel</strong>, setelah konfirmasi ke Telegram Admin, Anda dapat mengunduh file script atau membuka <strong>Link Channel Reseller</strong> langsung di website melalui menu <strong>Akses Script & Reseller</strong> setelah Admin menyetujui pesanan Anda.
                     </p>
                     <button type="button" onclick="openOrderAccessModalFromStep3()" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 text-xs font-bold transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-file-arrow-down"></i> Cek Status & Akses File Script
+                        <i class="fa-solid fa-key"></i> Cek Status & Akses Script / Channel Reseller
                     </button>
                 </div>
 
@@ -352,7 +353,7 @@
         </div>
     </div>
 
-    <!-- ================= ORDER STATUS & SCRIPT ACCESS MODAL (BUYER) ================= -->
+    <!-- ================= ORDER STATUS & SCRIPT/RESELLER ACCESS MODAL (BUYER) ================= -->
     <div id="orderAccessModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-5 sm:p-7 relative shadow-2xl my-4 sm:my-8">
             <button type="button" onclick="closeOrderAccessModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-9 h-9 rounded-full flex items-center justify-center transition">
@@ -361,10 +362,10 @@
 
             <div class="mb-5 pr-8">
                 <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-file-code text-emerald-400"></i> Akses File Script Bot
+                    <i class="fa-solid fa-key text-emerald-400"></i> Akses Script & Channel Reseller
                 </h3>
                 <p class="text-xs text-slate-400 mt-1">
-                    Khusus pembelian produk <strong>Script Bot</strong>. File script otomatis terbuka setelah dikonfirmasi oleh Admin di Admin Panel.
+                    Khusus pembelian produk <strong>Script Bot</strong> & <strong>Reseller Panel</strong>. File script atau link channel reseller otomatis terbuka setelah dikonfirmasi oleh Admin di Admin Panel.
                 </p>
             </div>
 
@@ -727,8 +728,8 @@
                     <span id="currentScriptFileLabel" class="hidden text-[11px] text-emerald-400 mt-1 block"></span>
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-300 mb-1">Atau Link Download / Akses Alternatif</label>
-                    <input type="text" id="prodScriptInput" placeholder="https://t.me/fajrushstore atau link script..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+                    <label class="block font-semibold text-slate-300 mb-1">Link Channel Reseller / Download / Akses Produk</label>
+                    <input type="text" id="prodScriptInput" placeholder="https://t.me/+linkchannelreseller atau link script..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-300 mb-1">Deskripsi Singkat</label>
@@ -959,8 +960,14 @@
         let uploadedProofBase64 = null;
         let currentCompletedOrderId = null;
 
-        function isScriptBotProduct(category) {
-            return Boolean(category && category.toLowerCase().includes('script'));
+        function requiresAdminConfirmation(category) {
+            if (!category) return false;
+            const lower = category.toLowerCase();
+            return lower.includes('script') || lower.includes('reseller');
+        }
+
+        function isResellerPanelCategory(category) {
+            return Boolean(category && category.toLowerCase().includes('reseller'));
         }
 
         // Initialize App & Sync Supabase
@@ -1461,7 +1468,7 @@
             const basePrice = Number(selectedProduct.price);
             const finalTotal = Math.max(0, basePrice - currentDiscountAmount) + currentUniqueCode;
             const orderTime = new Date().toLocaleString('id-ID');
-            const isScriptBot = isScriptBotProduct(selectedProduct.category);
+            const needsConfirmation = requiresAdminConfirmation(selectedProduct.category);
 
             const newTrx = {
                 id: 'TRX-' + Math.floor(Math.random() * 900000 + 100000),
@@ -1472,7 +1479,7 @@
                 contact: contact,
                 total: finalTotal,
                 proofImage: uploadedProofBase64,
-                status: isScriptBot ? 'Menunggu Konfirmasi' : 'Berhasil'
+                status: needsConfirmation ? 'Menunggu Konfirmasi' : 'Berhasil'
             };
             currentCompletedOrderId = newTrx.id;
             transactions.unshift(newTrx);
@@ -1539,8 +1546,8 @@
             // Send Payment Proof Image + Receipt directly to Telegram Bot (@bieiwjwkwjsk_bot)
             await sendPaymentProofToTelegramBot(newTrx, selectedProduct, basePrice, currentDiscountAmount, currentUniqueCode, uploadedProofBase64);
 
-            const accessInfoLine = isScriptBot
-                ? `🔑 Akses Script: Menunggu Konfirmasi Admin (Cek menu Akses Script di website)`
+            const accessInfoLine = needsConfirmation
+                ? `🔑 Akses Script / Channel Reseller: Menunggu Konfirmasi Admin (Cek menu Akses Script & Reseller di website)`
                 : `🔑 Akses / File: ${selectedProduct.scriptLink}`;
 
             const receiptText = `*STRUK PEMBELIAN FAJRUSH STORE*\n\n` +
@@ -1561,7 +1568,7 @@
             document.getElementById('receiptTextPreview').innerText = receiptText;
 
             const scriptNoticeEl = document.getElementById('step3ScriptNotice');
-            if (isScriptBot) {
+            if (needsConfirmation) {
                 scriptNoticeEl.classList.remove('hidden');
             } else {
                 scriptNoticeEl.classList.add('hidden');
@@ -1649,10 +1656,11 @@
             container.innerHTML = matchedOrders.map(trx => {
                 const prod = products.find(p => p.id === trx.productId || p.name === trx.productName);
                 const category = trx.productCategory || (prod ? prod.category : '');
-                const isScriptBot = isScriptBotProduct(category);
+                const isConfirmable = requiresAdminConfirmation(category);
+                const isReseller = isResellerPanelCategory(category);
                 const isConfirmed = trx.status === 'Terkonfirmasi';
 
-                if (!isScriptBot) {
+                if (!isConfirmable) {
                     return `
                         <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-4 space-y-2">
                             <div class="flex items-center justify-between gap-2">
@@ -1661,18 +1669,53 @@
                             </div>
                             <h4 class="text-sm font-bold text-white">${trx.productName}</h4>
                             <p class="text-[11px] text-slate-400">
-                                Kategori: <strong>${category || 'Produk Digital'}</strong> • Produk non-Script Bot diproses & dikirim langsung via Telegram Admin (<a href="https://t.me/fajrushstore" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline">t.me/fajrushstore</a>).
+                                Kategori: <strong>${category || 'Produk Digital'}</strong> • Produk non-Script Bot / Reseller Panel diproses & dikirim langsung via Telegram Admin (<a href="https://t.me/fajrushstore" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline">t.me/fajrushstore</a>).
                             </p>
                         </div>
                     `;
                 }
 
                 if (isConfirmed) {
-                    const fileInfoLabel = prod && prod.scriptFileName
-                        ? `<div class="bg-slate-900/80 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] text-emerald-300 flex items-center gap-2 truncate"><i class="fa-solid fa-file-zipper shrink-0"></i><span class="truncate">File siap diunduh: <strong>${prod.scriptFileName}</strong></span></div>`
-                        : (prod && prod.scriptLink && prod.scriptLink !== 'https://t.me/fajrushstore'
-                            ? `<div class="bg-slate-900/80 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] text-emerald-300 flex items-center gap-2 truncate"><i class="fa-solid fa-link shrink-0"></i><span class="truncate">Akses: <strong>${prod.scriptLink}</strong></span></div>`
-                            : '');
+                    const hasFile = Boolean(prod && prod.scriptFileData);
+                    const hasLink = Boolean(prod && prod.scriptLink);
+
+                    let infoHtml = '';
+                    if (hasFile) {
+                        infoHtml += `<div class="bg-slate-900/80 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] text-emerald-300 flex items-center gap-2 truncate"><i class="fa-solid fa-file-zipper shrink-0"></i><span class="truncate">File script siap diunduh: <strong>${prod.scriptFileName || 'Script_Bot.zip'}</strong></span></div>`;
+                    }
+                    if (hasLink) {
+                        const linkTitle = isReseller ? 'Link Channel Reseller' : 'Link Akses / Download';
+                        infoHtml += `<div class="bg-slate-900/80 border border-indigo-500/30 rounded-xl px-3 py-2 text-[11px] text-indigo-200 flex items-center gap-2 truncate"><i class="fa-brands fa-telegram text-indigo-400 shrink-0"></i><span class="truncate">${linkTitle}: <strong>${prod.scriptLink}</strong></span></div>`;
+                    }
+
+                    let actionsHtml = '';
+                    if (hasFile) {
+                        actionsHtml += `
+                            <button type="button" onclick="downloadPurchasedScriptFile('${trx.id}')" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-bold text-xs transition shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-download"></i> Download File Script Sekarang
+                            </button>
+                        `;
+                    }
+                    if (hasLink) {
+                        const btnLabel = isReseller ? 'Gabung / Buka Link Channel Reseller' : 'Buka Link Akses / Download Script';
+                        actionsHtml += `
+                            <div class="flex gap-2">
+                                <button type="button" onclick="openPurchasedProductLink('${trx.id}')" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white font-bold text-xs transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-up-right-from-square"></i> ${btnLabel}
+                                </button>
+                                <button type="button" onclick="copyPurchasedProductLink('${trx.id}')" title="Salin Link" class="px-3.5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 text-xs font-bold transition flex items-center justify-center gap-1.5 shrink-0">
+                                    <i class="fa-solid fa-copy"></i> Salin
+                                </button>
+                            </div>
+                        `;
+                    }
+                    if (!hasFile && !hasLink) {
+                        actionsHtml = `
+                            <button type="button" onclick="downloadPurchasedScriptFile('${trx.id}')" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-download"></i> Cek & Akses Produk Sekarang
+                            </button>
+                        `;
+                    }
 
                     return `
                         <div class="bg-gradient-to-br from-emerald-950/50 to-slate-900 border border-emerald-500/40 rounded-2xl p-4 space-y-3 shadow-lg">
@@ -1687,13 +1730,15 @@
                                 <h4 class="text-sm font-bold text-white">${trx.productName}</h4>
                                 <span class="text-[11px] text-slate-400 block mt-0.5">${trx.time}</span>
                             </div>
-                            ${fileInfoLabel}
-                            <button type="button" onclick="accessPurchasedScript('${trx.id}')" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-bold text-xs transition shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-download"></i> Download / Akses File Script Sekarang
-                            </button>
+                            ${infoHtml}
+                            <div class="space-y-2">${actionsHtml}</div>
                         </div>
                     `;
                 }
+
+                const lockedText = isReseller
+                    ? 'Akses Channel Reseller Terkunci (Menunggu Konfirmasi)'
+                    : 'File Script Terkunci (Menunggu Konfirmasi)';
 
                 return `
                     <div class="bg-slate-800/70 border border-amber-500/30 rounded-2xl p-4 space-y-3">
@@ -1709,27 +1754,19 @@
                             <span class="text-[11px] text-slate-400 block mt-0.5">${trx.time}</span>
                         </div>
                         <div class="bg-slate-900/80 border border-slate-700 rounded-xl p-2.5 text-[11px] text-slate-300 leading-relaxed">
-                            Silakan kirim struk pembayaran ke Telegram Admin (<a href="https://t.me/fajrushstore" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline font-semibold">t.me/fajrushstore</a>). Setelah Admin menekan konfirmasi di Admin Panel, tombol unduh file script akan muncul di sini.
+                            Silakan kirim struk pembayaran ke Telegram Admin (<a href="https://t.me/fajrushstore" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline font-semibold">t.me/fajrushstore</a>). Setelah Admin menekan konfirmasi di Admin Panel, tombol akses file script / link channel reseller akan otomatis terbuka di sini.
                         </div>
                         <button type="button" disabled class="w-full py-2.5 rounded-xl bg-slate-800 text-slate-500 border border-slate-700 font-bold text-xs cursor-not-allowed flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-lock"></i> File Script Terkunci (Menunggu Konfirmasi)
+                            <i class="fa-solid fa-lock"></i> ${lockedText}
                         </button>
                     </div>
                 `;
             }).join('');
         }
 
-        async function accessPurchasedScript(trxId) {
-            const trx = transactions.find(t => t.id === trxId);
-            if (!trx || trx.status !== 'Terkonfirmasi') {
-                showToast('Belum Dikonfirmasi', 'Pesanan ini belum dikonfirmasi oleh Admin.', true);
-                return;
-            }
-
+        async function fetchLatestProductForOrder(trx) {
             let prod = products.find(p => p.id === trx.productId || p.name === trx.productName);
-
-            // Ambil data file script terbaru dari Supabase jika belum tersimpan di memori lokal
-            if (!prod || !prod.scriptFileData) {
+            if (!prod || (!prod.scriptFileData && !prod.scriptLink)) {
                 try {
                     const { data } = await supabaseClient
                         .from('products')
@@ -1751,16 +1788,25 @@
                         };
                     }
                 } catch (e) {
-                    console.warn('Gagal memuat file terbaru dari server:', e);
+                    console.warn('Gagal memuat data produk terbaru dari server:', e);
                 }
             }
+            return prod;
+        }
 
+        async function downloadPurchasedScriptFile(trxId) {
+            const trx = transactions.find(t => t.id === trxId);
+            if (!trx || trx.status !== 'Terkonfirmasi') {
+                showToast('Belum Dikonfirmasi', 'Pesanan ini belum dikonfirmasi oleh Admin.', true);
+                return;
+            }
+
+            const prod = await fetchLatestProductForOrder(trx);
             if (!prod) {
                 showToast('Produk Tidak Ditemukan', 'Data file produk tidak ditemukan. Hubungi Admin TG.', true);
                 return;
             }
 
-            // Unduh langsung file script menggunakan Blob URL (kompatibel 100% di Chrome Android & Desktop)
             if (prod.scriptFileData) {
                 try {
                     const fileName = prod.scriptFileName || `${prod.name.replace(/[^a-zA-Z0-9_-]/g, '_')}.zip`;
@@ -1783,24 +1829,51 @@
                 }
             }
 
-            if (prod.scriptLink && prod.scriptLink.startsWith('http')) {
-                const link = document.createElement('a');
-                link.href = prod.scriptLink;
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                showToast('Membuka File Script', 'Mengarahkan langsung ke unduhan file script...');
+            if (prod.scriptLink) {
+                await openPurchasedProductLink(trxId);
+            } else {
+                showToast('File Belum Diunggah Admin', 'Admin belum melampirkan file/link pada produk ini. Silakan chat t.me/fajrushstore.', true);
+            }
+        }
+
+        async function openPurchasedProductLink(trxId) {
+            const trx = transactions.find(t => t.id === trxId);
+            if (!trx || trx.status !== 'Terkonfirmasi') {
+                showToast('Belum Dikonfirmasi', 'Pesanan ini belum dikonfirmasi oleh Admin.', true);
                 return;
             }
 
-            if (prod.scriptLink) {
-                copyTextSafe(prod.scriptLink);
-                showToast('Akses Disalin', `Info akses: ${prod.scriptLink}`);
-            } else {
-                showToast('File Belum Diunggah Admin', 'Admin belum melampirkan file pada produk ini. Silakan chat t.me/fajrushstore.', true);
+            const prod = await fetchLatestProductForOrder(trx);
+            if (!prod || !prod.scriptLink) {
+                showToast('Link Belum Tersedia', 'Link channel reseller / akses belum diatur Admin. Hubungi t.me/fajrushstore.', true);
+                return;
             }
+
+            const rawLink = prod.scriptLink.trim();
+            if (rawLink.startsWith('http://') || rawLink.startsWith('https://')) {
+                window.open(rawLink, '_blank', 'noopener,noreferrer');
+                showToast('Membuka Link Akses', 'Mengarahkan ke Channel Reseller / Link Akses...');
+            } else if (rawLink.startsWith('t.me/') || rawLink.startsWith('@')) {
+                const cleanUrl = rawLink.startsWith('@')
+                    ? `https://t.me/${rawLink.slice(1)}`
+                    : `https://${rawLink}`;
+                window.open(cleanUrl, '_blank', 'noopener,noreferrer');
+                showToast('Membuka Telegram', 'Mengarahkan ke Channel Reseller...');
+            } else {
+                copyTextSafe(rawLink);
+                showToast('Akses Disalin', `Info akses disalin: ${rawLink}`);
+            }
+        }
+
+        async function copyPurchasedProductLink(trxId) {
+            const trx = transactions.find(t => t.id === trxId);
+            if (!trx || trx.status !== 'Terkonfirmasi') return;
+
+            const prod = await fetchLatestProductForOrder(trx);
+            if (!prod || !prod.scriptLink) return;
+
+            copyTextSafe(prod.scriptLink.trim());
+            showToast('Link Disalin', 'Link Channel Reseller / Akses berhasil disalin ke clipboard!');
         }
 
         function dataURLtoBlob(dataUrl) {
@@ -2459,11 +2532,11 @@
             }
 
             tbody.innerHTML = transactions.map(t => {
-                const isScriptBot = isScriptBotProduct(t.productCategory);
+                const needsConfirm = requiresAdminConfirmation(t.productCategory);
                 const isConfirmed = t.status === 'Terkonfirmasi';
 
                 let actionColHtml = '';
-                if (isScriptBot && !isConfirmed) {
+                if (needsConfirm && !isConfirmed) {
                     actionColHtml = `
                         <div class="flex flex-col items-end gap-1.5">
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300">Menunggu Konfirmasi</span>
@@ -2523,7 +2596,7 @@
             }
 
             renderAdminTransactions();
-            showToast('Akses Script Dibuka', `Pesanan ${trxId} telah dikonfirmasi! Pembeli kini dapat mengunduh file script di website.`);
+            showToast('Akses Dibuka', `Pesanan ${trxId} telah dikonfirmasi! Pembeli kini dapat mengakses file script / link channel reseller di website.`);
         }
 
         function viewProofImage(trxId) {
