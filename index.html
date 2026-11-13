@@ -433,6 +433,54 @@
             </div>
 
             <!-- TAB 2: CATEGORIES -->
+            <div id="adminTab-categories" class="admin-tab-content space-y-6 hidden">
+                <div class="flex justify-between items-center">
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Daftar Kategori Produk</h4>
+                    <button type="button" onclick="openCategoryFormModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-plus"></i> Tambah Kategori Baru
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-800 uppercase text-slate-400 font-semibold">
+                            <tr>
+                                <th class="p-3 rounded-l-xl">Nama Kategori</th>
+                                <th class="p-3 rounded-r-xl text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminCategoryTableBody" class="divide-y divide-slate-800">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 3: VOUCHERS -->
+            <div id="adminTab-vouchers" class="admin-tab-content space-y-6 hidden">
+                <div class="flex justify-between items-center">
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider">Daftar Voucher Promo</h4>
+                    <button type="button" onclick="openVoucherFormModal()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-plus"></i> Tambah Voucher Baru
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-800 uppercase text-slate-400 font-semibold">
+                            <tr>
+                                <th class="p-3 rounded-l-xl">Kode</th>
+                                <th class="p-3">Potongan</th>
+                                <th class="p-3">Periode Berlaku</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 rounded-r-xl text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminVoucherTableBody" class="divide-y divide-slate-800">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- TAB 4: QRIS & TELEGRAM BOT SETTING -->
             <div id="adminTab-qris" class="admin-tab-content space-y-6 hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -878,6 +926,14 @@
                         id: t.id,
                         time: t.time,
                         productName: t.product_name || t.productName,
+                        contact: t.contact,
+                        total: Number(t.total),
+                        proofImage: t.proof_image || t.proofImage || '',
+                        status: t.status || 'Berhasil'
+                    }));
+                    localStorage.setItem('fajrush_transactions', JSON.stringify(transactions));
+                }
+
                 // Fetch QRIS & Telegram Bot Settings
                 const { data: sData, error: sErr } = await supabaseClient.from('settings').select('*');
                 if (!sErr && sData && Array.isArray(sData)) {
@@ -1460,11 +1516,6 @@
         function completeOrderFinal() {
             closeCheckoutModal();
             showToast('Pesanan Diteruskan', 'Bukti transfer telah masuk ke Bot & Admin Panel, mengarahkan ke Telegram Admin!');
-        }
-
-        function completeOrderFinal() {
-            closeCheckoutModal();
-            showToast('Pesanan Diteruskan', 'Silakan lampirkan foto bukti transfer di chat Telegram Admin!');
         }
 
         // ================= ADMIN AUTH & PANEL =================
