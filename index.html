@@ -330,9 +330,9 @@
     </div>
 
     <!-- ================= ADMIN PANEL MODAL ================= -->
-    <div id="adminModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-6 sm:p-8 relative shadow-2xl my-8">
-            <button onclick="closeAdminModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white bg-slate-800 w-9 h-9 rounded-full flex items-center justify-center transition">
+    <div id="adminModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-4 sm:p-8 relative shadow-2xl my-4 sm:my-8 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-9 h-9 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
@@ -492,8 +492,8 @@
     </div>
 
     <!-- ================= ADD CATEGORY MODAL ================= -->
-    <div id="categoryFormModal" class="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 relative shadow-2xl">
+    <div id="categoryFormModal" class="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
             <button onclick="closeCategoryFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -512,7 +512,7 @@
 
     <!-- ================= ADD/EDIT PRODUCT MODAL ================= -->
     <div id="productFormModal" class="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 relative shadow-2xl">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 relative shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
             <button onclick="closeProductFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -544,8 +544,12 @@
                     <input type="file" id="prodImageFile" accept="image/*" class="w-full text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-indigo-400 hover:file:bg-slate-700 cursor-pointer">
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-300 mb-1">File Script / Link Download (Khusus Script/Aplikasi)</label>
-                    <input type="text" id="prodScriptInput" placeholder="Link download / instruksi script..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
+                    <label class="block font-semibold text-slate-300 mb-1">File Script Bot / Aplikasi (Ambil dari Perangkat)</label>
+                    <input type="file" id="prodScriptFile" class="w-full text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-indigo-400 hover:file:bg-slate-700 cursor-pointer">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Atau Link Download / Akses Alternatif</label>
+                    <input type="text" id="prodScriptInput" placeholder="https://t.me/fajrushstore atau link script..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-indigo-500">
                 </div>
                 <div>
                     <label class="block font-semibold text-slate-300 mb-1">Deskripsi Singkat</label>
@@ -560,7 +564,7 @@
 
     <!-- ================= ADD VOUCHER MODAL ================= -->
     <div id="voucherFormModal" class="fixed inset-0 z-60 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 relative shadow-2xl">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
             <button onclick="closeVoucherFormModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -1375,6 +1379,7 @@
             document.getElementById('prodDescInput').value = '';
             document.getElementById('prodScriptInput').value = '';
             document.getElementById('prodImageFile').value = '';
+            document.getElementById('prodScriptFile').value = '';
             document.getElementById('productFormTitle').innerText = 'Tambah Produk Baru';
 
             const selectEl = document.getElementById('prodCategoryInput');
@@ -1419,16 +1424,18 @@
             const price = parseFloat(document.getElementById('prodPriceInput').value) || 0;
             const stock = parseInt(document.getElementById('prodStockInput').value) || 0;
             const desc = document.getElementById('prodDescInput').value.trim();
-            const scriptLink = document.getElementById('prodScriptInput').value.trim();
+            const scriptLinkInput = document.getElementById('prodScriptInput').value.trim();
             const fileInput = document.getElementById('prodImageFile');
+            const scriptFileInput = document.getElementById('prodScriptFile');
 
             if (!name || price <= 0) {
                 showToast('Data Belum Lengkap', 'Nama produk dan harga wajib diisi dengan benar!', true);
                 return;
             }
 
-            const finishSave = async (imgUrl) => {
+            const finishSave = async (imgUrl, finalScript) => {
                 let savedObj;
+                const scriptVal = finalScript || scriptLinkInput || 'https://t.me/fajrushstore';
                 if (id) {
                     const idx = products.findIndex(p => p.id === id);
                     if (idx !== -1) {
@@ -1439,7 +1446,7 @@
                             price,
                             stock,
                             desc,
-                            scriptLink,
+                            scriptLink: scriptVal,
                             image: imgUrl || products[idx].image
                         };
                         savedObj = products[idx];
@@ -1453,7 +1460,7 @@
                         price,
                         stock,
                         desc,
-                        scriptLink,
+                        scriptLink: scriptVal,
                         image: imgUrl || 'https://placehold.co/400x300/4f46e5/ffffff?text=Fajrush+Store'
                     };
                     products.push(savedObj);
@@ -1482,15 +1489,38 @@
                 closeProductFormModal();
             };
 
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    finishSave(e.target.result);
+            // Process script file and image file from device
+            const processFiles = () => {
+                let imageUrl = null;
+                let scriptValue = null;
+
+                const handleScriptDone = (scriptRes) => {
+                    if (scriptRes) scriptValue = scriptRes;
+                    if (fileInput.files && fileInput.files[0]) {
+                        const readerImg = new FileReader();
+                        readerImg.onload = function(e) {
+                            imageUrl = e.target.result;
+                            finishSave(imageUrl, scriptValue);
+                        };
+                        readerImg.readAsDataURL(fileInput.files[0]);
+                    } else {
+                        finishSave(null, scriptValue);
+                    }
                 };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                finishSave(null);
-            }
+
+                if (scriptFileInput.files && scriptFileInput.files[0]) {
+                    const scriptFile = scriptFileInput.files[0];
+                    const readerScript = new FileReader();
+                    readerScript.onload = function(e) {
+                        handleScriptDone(e.target.result);
+                    };
+                    readerScript.readAsDataURL(scriptFile);
+                } else {
+                    handleScriptDone(null);
+                }
+            };
+
+            processFiles();
         }
 
         async function deleteProduct(id) {
@@ -1505,7 +1535,7 @@
 
             renderProducts();
             renderAdminProducts();
-            showToast('Terhapus', 'Produk berhasil dihapus dari store.');
+            showToast('Terhapus', 'Produk berhasil dihapus.');
         }
 
         // Admin Vouchers Management
@@ -1516,17 +1546,16 @@
             vouchers.forEach(v => {
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-800/40 transition';
-                let discountLabel = v.type === 'percent' ? `${v.value}%` : `Rp ${v.value.toLocaleString('id-ID')}`;
+                let discountText = v.type === 'percent' ? `${v.value}%` : `Rp ${v.value.toLocaleString('id-ID')}`;
                 tr.innerHTML = `
                     <td class="p-3 font-mono font-bold text-white">${v.code}</td>
-                    <td class="p-3 text-indigo-400 font-semibold">${discountLabel} (${v.type})</td>
-                    <td class="p-3 text-slate-400">${v.startDate} s/d ${v.endDate}</td>
+                    <td class="p-3 text-emerald-400 font-semibold">${discountText}</td>
+                    <td class="p-3">${v.startDate || '-'} s/d ${v.endDate || '-'}</td>
                     <td class="p-3">
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${v.active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'}">${v.active ? 'Aktif' : 'Nonaktif'}</span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${v.active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">${v.active ? 'Aktif' : 'Nonaktif'}</span>
                     </td>
-                    <td class="p-3 text-right space-x-1">
-                        <button onclick="toggleVoucher('${v.id}')" class="px-2.5 py-1.5 rounded-lg bg-amber-600/20 text-amber-400 hover:bg-amber-600 hover:text-white transition" title="Toggle Status"><i class="fa-solid fa-power-off"></i></button>
-                        <button onclick="deleteVoucher('${v.id}')" class="px-2.5 py-1.5 rounded-lg bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white transition"><i class="fa-solid fa-trash"></i></button>
+                    <td class="p-3 text-right">
+                        <button onclick="deleteVoucher('${v.id}')" class="px-2.5 py-1.5 rounded-lg bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white transition"><i class="fa-solid fa-trash"></i> Hapus</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1551,11 +1580,11 @@
             const code = document.getElementById('vCodeInput').value.trim().toUpperCase();
             const type = document.getElementById('vTypeInput').value;
             const value = parseFloat(document.getElementById('vValueInput').value) || 0;
-            const startDate = document.getElementById('vStartInput').value || '2026-01-01';
-            const endDate = document.getElementById('vEndInput').value || '2026-12-31';
+            const startDate = document.getElementById('vStartInput').value;
+            const endDate = document.getElementById('vEndInput').value;
 
             if (!code || value <= 0) {
-                showToast('Data Tidak Valid', 'Kode voucher dan nilai potongan wajib diisi!', true);
+                showToast('Data Belum Lengkap', 'Kode voucher dan nilai potongan wajib diisi!', true);
                 return;
             }
 
@@ -1568,6 +1597,7 @@
                 endDate,
                 active: true
             };
+
             vouchers.push(newV);
             localStorage.setItem('fajrush_vouchers', JSON.stringify(vouchers));
 
@@ -1588,33 +1618,7 @@
             renderVouchers();
             renderAdminVouchers();
             closeVoucherFormModal();
-            showToast('Sukses', 'Voucher diskon berhasil ditambahkan.');
-        }
-
-        async function toggleVoucher(id) {
-            const v = vouchers.find(item => item.id === id);
-            if (v) {
-                v.active = !v.active;
-                localStorage.setItem('fajrush_vouchers', JSON.stringify(vouchers));
-
-                try {
-                    await supabaseClient.from('vouchers').upsert({
-                        id: v.id,
-                        code: v.code,
-                        type: v.type,
-                        value: v.value,
-                        start_date: v.startDate,
-                        end_date: v.endDate,
-                        active: v.active
-                    });
-                } catch (e) {
-                    console.warn('Supabase voucher toggle error:', e);
-                }
-
-                renderVouchers();
-                renderAdminVouchers();
-                showToast('Status Diubah', `Voucher ${v.code} status diperbarui.`);
-            }
+            showToast('Berhasil', `Voucher ${code} berhasil ditambahkan.`);
         }
 
         async function deleteVoucher(id) {
@@ -1632,56 +1636,25 @@
             showToast('Terhapus', 'Voucher berhasil dihapus.');
         }
 
-        // Admin QRIS Setting
-        let newQrisBase64 = null;
-        function previewNewQris(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    newQrisBase64 = e.target.result;
-                    document.getElementById('adminQrisPreviewImg').src = newQrisBase64;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function saveNewQris() {
-            if (!newQrisBase64) {
-                showToast('Belum Pilih Gambar', 'Pilih file gambar QRIS terlebih dahulu dari perangkat.', true);
-                return;
-            }
-            qrisImageUrl = newQrisBase64;
-            localStorage.setItem('fajrush_qris', qrisImageUrl);
-
-            try {
-                await supabaseClient.from('settings').upsert({ key: 'qris_url', value: qrisImageUrl }, { onConflict: 'key' });
-            } catch (e) {
-                console.warn('Supabase settings upsert error:', e);
-            }
-
-            showToast('QRIS Diperbarui', 'Gambar QRIS pembayaran berhasil diganti.');
-        }
-
         // Admin Transactions
         function renderAdminTransactions() {
             const tbody = document.getElementById('adminTransactionTableBody');
             tbody.innerHTML = '';
 
             if (transactions.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500">Belum ada transaksi masuk.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500">Belum ada riwayat transaksi.</td></tr>';
                 return;
             }
 
-            transactions.forEach(trx => {
+            transactions.forEach(t => {
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-800/40 transition';
                 tr.innerHTML = `
-                    <td class="p-3 font-mono text-slate-400">${trx.time}</td>
-                    <td class="p-3 font-bold text-white">${trx.productName}</td>
-                    <td class="p-3 text-indigo-300 font-mono">${trx.contact}</td>
-                    <td class="p-3 font-extrabold text-emerald-400">Rp ${trx.total.toLocaleString('id-ID')}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">${trx.status}</span></td>
+                    <td class="p-3 text-slate-400">${t.time}</td>
+                    <td class="p-3 font-bold text-white">${t.productName}</td>
+                    <td class="p-3 text-indigo-300">${t.contact}</td>
+                    <td class="p-3 font-semibold text-emerald-400">Rp ${t.total.toLocaleString('id-ID')}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">${t.status}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1690,15 +1663,43 @@
         async function clearTransactions() {
             transactions = [];
             localStorage.removeItem('fajrush_transactions');
-
-            try {
-                await supabaseClient.from('transactions').delete().neq('id', '0');
-            } catch (e) {
-                console.warn('Supabase clear transactions error:', e);
-            }
-
             renderAdminTransactions();
             showToast('Dibersihkan', 'Riwayat transaksi berhasil dikosongkan.');
+        }
+
+        // QRIS Settings
+        function previewNewQris(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('adminQrisPreviewImg').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function saveNewQris() {
+            const fileInput = document.getElementById('qrisUploadInput');
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    qrisImageUrl = e.target.result;
+                    localStorage.setItem('fajrush_qris', qrisImageUrl);
+                    document.getElementById('adminQrisPreviewImg').src = qrisImageUrl;
+
+                    try {
+                        await supabaseClient.from('settings').upsert({ key: 'qris_url', value: qrisImageUrl });
+                    } catch (err) {
+                        console.warn('Supabase qris update error:', err);
+                    }
+
+                    showToast('QRIS Diperbarui', 'Gambar QRIS berhasil disimpan dan disinkronkan!');
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                showToast('Pilih File', 'Silakan pilih gambar QRIS terlebih dahulu!', true);
+            }
         }
     </script>
 </body>
