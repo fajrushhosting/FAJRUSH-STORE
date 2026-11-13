@@ -1610,6 +1610,12 @@
                 }
 
                 if (isConfirmed) {
+                    const fileInfoLabel = prod && prod.scriptFileName
+                        ? `<div class="bg-slate-900/80 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] text-emerald-300 flex items-center gap-2 truncate"><i class="fa-solid fa-file-zipper shrink-0"></i><span class="truncate">File siap diunduh: <strong>${prod.scriptFileName}</strong></span></div>`
+                        : (prod && prod.scriptLink && prod.scriptLink !== 'https://t.me/fajrushstore'
+                            ? `<div class="bg-slate-900/80 border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] text-emerald-300 flex items-center gap-2 truncate"><i class="fa-solid fa-link shrink-0"></i><span class="truncate">Akses: <strong>${prod.scriptLink}</strong></span></div>`
+                            : '');
+
                     return `
                         <div class="bg-gradient-to-br from-emerald-950/50 to-slate-900 border border-emerald-500/40 rounded-2xl p-4 space-y-3 shadow-lg">
                             <div class="flex items-center justify-between gap-2">
@@ -1623,70 +1629,87 @@
                                 <h4 class="text-sm font-bold text-white">${trx.productName}</h4>
                                 <span class="text-[11px] text-slate-400 block mt-0.5">${trx.time}</span>
                             </div>
-                            <button type="button" onclick="accessPurchasedScript('${trx.id}')" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+                            ${fileInfoLabel}
+                            <button type="button" onclick="accessPurchasedScript('${trx.id}')" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-bold text-xs transition shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-download"></i> Download / Akses File Script Sekarang
                             </button>
                         </div>
                     `;
                 }
-
-                const confirmMsg = encodeURIComponent(`Halo Admin Fajrush Store, mohon konfirmasi pesanan Script Bot saya:\n🆔 ID Transaksi: ${trx.id}\n📦 Produk: ${trx.productName}\n📱 Kontak: ${trx.contact}`);
-                return `
-                    <div class="bg-slate-800/70 border border-amber-500/40 rounded-2xl p-4 space-y-3">
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="text-[11px] font-mono font-bold text-amber-300">${trx.id}</span>
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                                <i class="fa-solid fa-clock"></i> Menunggu Konfirmasi Admin
-                            </span>
-                        </div>
-                        <div>
-                            <span class="text-[10px] font-bold uppercase text-indigo-400">${category}</span>
-                            <h4 class="text-sm font-bold text-white">${trx.productName}</h4>
-                            <span class="text-[11px] text-slate-400 block mt-0.5">${trx.time}</span>
-                        </div>
-                        <div class="bg-slate-900/80 border border-slate-700 rounded-xl p-2.5 text-[11px] text-slate-300 leading-relaxed">
-                            <i class="fa-solid fa-lock text-amber-400 mr-1"></i> File script terkunci sampai Admin mengonfirmasi pembayaran Anda di Admin Panel.
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button type="button" onclick="refreshAndRenderOrders(true)" class="py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold transition flex items-center justify-center gap-1.5">
-                                <i class="fa-solid fa-rotate"></i> Refresh Status
-                            </button>
-                            <a href="https://t.me/fajrushstore?text=${confirmMsg}" target="_blank" class="py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center justify-center gap-1.5">
-                                <i class="fa-brands fa-telegram"></i> Chat Admin
-                            </a>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function accessPurchasedScript(trxId) {
+// ... existing code ... -->
+        async function accessPurchasedScript(trxId) {
             const trx = transactions.find(t => t.id === trxId);
             if (!trx || trx.status !== 'Terkonfirmasi') {
                 showToast('Belum Dikonfirmasi', 'Pesanan ini belum dikonfirmasi oleh Admin.', true);
                 return;
             }
 
-            const prod = products.find(p => p.id === trx.productId || p.name === trx.productName);
+            let prod = products.find(p => p.id === trx.productId || p.name === trx.productName);
+
+            // Ambil data file script terbaru dari Supabase jika belum tersimpan di memori lokal
+            if (!prod || !prod.scriptFileData) {
+                try {
+                    const { data } = await supabaseClient
+                        .from('products')
+                        .select('*')
+                        .eq('id', trx.productId)
+                        .maybeSingle();
+                    if (data) {
+                        prod = {
+                            id: data.id,
+                            name: data.name,
+                            category: data.category,
+                            price: Number(data.price),
+                            stock: Number(data.stock),
+                            image: data.image,
+                            scriptLink: data.script_link || '',
+                            scriptFileName: data.script_file_name || '',
+                            scriptFileData: data.script_file_data || '',
+                            desc: data.description || ''
+                        };
+                    }
+                } catch (e) {
+                    console.warn('Gagal memuat file terbaru dari server:', e);
+                }
+            }
+
             if (!prod) {
                 showToast('Produk Tidak Ditemukan', 'Data file produk tidak ditemukan. Hubungi Admin TG.', true);
                 return;
             }
 
+            // Unduh langsung file script menggunakan Blob URL (kompatibel 100% di Chrome Android & Desktop)
             if (prod.scriptFileData) {
-                const link = document.createElement('a');
-                link.href = prod.scriptFileData;
-                link.download = prod.scriptFileName || `${prod.name.replace(/[^a-zA-Z0-9_-]/g, '_')}.zip`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                showToast('Mengunduh Script', `File "${link.download}" sedang diunduh ke perangkat Anda!`);
-                return;
+                try {
+                    const fileName = prod.scriptFileName || `${prod.name.replace(/[^a-zA-Z0-9_-]/g, '_')}.zip`;
+                    const blob = dataURLtoBlob(prod.scriptFileData);
+                    const blobUrl = URL.createObjectURL(blob);
+
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = fileName;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                    setTimeout(() => URL.revokeObjectURL(blobUrl), 15000);
+                    showToast('Mengunduh Script', `File "${fileName}" langsung diunduh ke perangkat Anda!`);
+                    return;
+                } catch (err) {
+                    console.warn('Blob download fallback:', err);
+                }
             }
 
             if (prod.scriptLink && prod.scriptLink.startsWith('http')) {
-                window.open(prod.scriptLink, '_blank');
-                showToast('Membuka Akses Script', 'Mengarahkan ke link file script...');
+                const link = document.createElement('a');
+                link.href = prod.scriptLink;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('Membuka File Script', 'Mengarahkan langsung ke unduhan file script...');
                 return;
             }
 
@@ -1694,757 +1717,7 @@
                 navigator.clipboard?.writeText(prod.scriptLink);
                 showToast('Akses Disalin', `Info akses: ${prod.scriptLink}`);
             } else {
-                showToast('Hubungi Admin', 'Silakan hubungi t.me/fajrushstore untuk pengambilan file.', true);
+                showToast('File Belum Diunggah Admin', 'Admin belum melampirkan file pada produk ini. Silakan chat t.me/fajrushstore.', true);
             }
         }
-
-        function dataURLtoBlob(dataURL) {
-            const arr = dataURL.split(',');
-            const mimeMatch = arr[0].match(/:(.*?);/);
-            const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while (n--) {
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            return new Blob([u8arr], { type: mime });
-        }
-
-        async function resolveTelegramChatId() {
-            if (telegramChatId) return telegramChatId;
-            try {
-                const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`);
-                const json = await res.json();
-                if (json.ok && Array.isArray(json.result) && json.result.length > 0) {
-                    // Prioritize admin username 'fajrushstore' if found
-                    let matchedChatId = null;
-                    for (let i = json.result.length - 1; i >= 0; i--) {
-                        const msg = json.result[i].message || json.result[i].channel_post;
-                        if (msg && msg.chat && msg.chat.id) {
-                            const uname = (msg.from?.username || msg.chat?.username || '').toLowerCase();
-                            if (uname === TELEGRAM_ADMIN_USERNAME.toLowerCase()) {
-                                matchedChatId = String(msg.chat.id);
-                                break;
-                            }
-                            if (!matchedChatId) {
-                                matchedChatId = String(msg.chat.id);
-                            }
-                        }
-                    }
-                    if (matchedChatId) {
-                        telegramChatId = matchedChatId;
-                        localStorage.setItem('fajrush_tg_chat_id', telegramChatId);
-                        await supabaseClient.from('settings').upsert({
-                            key: 'telegram_chat_id',
-                            value: telegramChatId
-                        });
-                        return telegramChatId;
-                    }
-                }
-            } catch (err) {
-                console.warn('Telegram getUpdates error:', err);
-            }
-            return '';
-        }
-
-        async function sendPaymentProofToTelegramBot(trx, product, basePrice, discountAmount, uniqueCode, proofBase64) {
-            try {
-                const targetChatId = await resolveTelegramChatId();
-                if (!targetChatId) {
-                    console.warn('Telegram Chat ID belum terdeteksi. Admin perlu mengirim /start ke @bieiwjwkwjsk_bot.');
-                    return false;
-                }
-
-                const captionText =
-                    `📥 BUKTI PEMBAYARAN BARU - FAJRUSH STORE\n\n` +
-                    `🆔 ID Transaksi: ${trx.id}\n` +
-                    `📦 Produk: ${product.name}\n` +
-                    `🏷️ Kategori: ${product.category}\n` +
-                    `💵 Harga Dasar: Rp ${basePrice.toLocaleString('id-ID')}\n` +
-                    `🎟️ Diskon: -Rp ${discountAmount.toLocaleString('id-ID')}\n` +
-                    `🔢 Kode Unik: +Rp ${uniqueCode}\n` +
-                    `💰 Total Transfer: Rp ${Number(trx.total).toLocaleString('id-ID')}\n` +
-                    `📱 Kontak Pembeli: ${trx.contact}\n` +
-                    `📅 Waktu: ${trx.time}\n` +
-                    `✅ Status: ${trx.status}`;
-
-                const photoBlob = dataURLtoBlob(proofBase64);
-                const formData = new FormData();
-                formData.append('chat_id', targetChatId);
-                formData.append('photo', photoBlob, `bukti_${trx.id}.jpg`);
-                formData.append('caption', captionText);
-
-                const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await res.json();
-                return result.ok === true;
-            } catch (err) {
-                console.warn('Gagal mengirim bukti ke Bot Telegram:', err);
-                return false;
-            }
-        }
-
-        function completeOrderFinal() {
-            closeCheckoutModal();
-            showToast('Pesanan Diteruskan', 'Bukti transfer telah masuk ke Bot & Admin Panel, mengarahkan ke Telegram Admin!');
-        }
-
-        // ================= ADMIN AUTH & PANEL =================
-        function checkAdminAccess() {
-            if (sessionStorage.getItem('fajrush_admin_auth') === 'true') {
-                openAdminModal();
-            } else {
-                const loginModal = document.getElementById('adminLoginModal');
-                loginModal.classList.remove('hidden');
-                loginModal.classList.add('flex');
-            }
-        }
-
-        function closeAdminLoginModal() {
-            const loginModal = document.getElementById('adminLoginModal');
-            loginModal.classList.add('hidden');
-            loginModal.classList.remove('flex');
-        }
-
-        function verifyAdminLogin() {
-            const u = document.getElementById('adminUserInput').value.trim();
-            const p = document.getElementById('adminPassInput').value.trim();
-
-            if (u === ADMIN_USER && p === ADMIN_PASS) {
-                sessionStorage.setItem('fajrush_admin_auth', 'true');
-                closeAdminLoginModal();
-                openAdminModal();
-                showToast('Login Berhasil', 'Selamat datang di Admin Panel Fajrush Store!');
-            } else {
-                showToast('Login Gagal', 'Username atau password admin salah!', true);
-            }
-        }
-
-        function adminLogout() {
-            sessionStorage.removeItem('fajrush_admin_auth');
-            closeAdminModal();
-            showToast('Logout', 'Anda telah keluar dari Admin Panel.');
-        }
-
-        function openAdminModal() {
-            renderAdminProducts();
-            renderAdminCategories();
-            renderAdminVouchers();
-            renderAdminTransactions();
-            document.getElementById('adminQrisPreviewImg').src = qrisImageUrl;
-            const tgInput = document.getElementById('adminTgChatIdInput');
-            if (tgInput) tgInput.value = telegramChatId;
-
-            const modal = document.getElementById('adminModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeAdminModal() {
-            const modal = document.getElementById('adminModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function switchAdminTab(tabName) {
-            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-                btn.classList.remove('bg-indigo-600', 'text-white');
-                btn.classList.add('bg-slate-800', 'text-slate-300');
-            });
-
-            document.getElementById(`adminTab-${tabName}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`adminTabBtn-${tabName}`);
-            activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
-            activeBtn.classList.add('bg-indigo-600', 'text-white');
-        }
-
-        // ================= ADMIN: PRODUCTS =================
-        function renderAdminProducts() {
-            const tbody = document.getElementById('adminProductTableBody');
-            if (products.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500">Belum ada produk.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = products.map(p => `
-                <tr class="hover:bg-slate-800/40 transition">
-                    <td class="p-3">
-                        <div class="flex items-center gap-2.5">
-                            <img src="${p.image}" alt="" class="w-9 h-9 rounded-lg object-cover border border-slate-700 shrink-0">
-                            <span class="font-bold text-white line-clamp-1">${p.name}</span>
-                        </div>
-                    </td>
-                    <td class="p-3 text-slate-400">${p.category}</td>
-                    <td class="p-3 font-semibold text-indigo-400">Rp ${Number(p.price).toLocaleString('id-ID')}</td>
-                    <td class="p-3 font-bold">${p.stock}</td>
-                    <td class="p-3 text-right whitespace-nowrap space-x-1">
-                        <button type="button" onclick="openProductFormModal('${p.id}')" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 hover:bg-amber-500 hover:text-white transition">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button type="button" onclick="deleteProduct('${p.id}')" class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white transition">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function openProductFormModal(productId = null) {
-            const catSelect = document.getElementById('prodCategoryInput');
-            catSelect.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
-
-            document.getElementById('prodImageFile').value = '';
-            document.getElementById('prodScriptFile').value = '';
-            const fileLabel = document.getElementById('currentScriptFileLabel');
-            fileLabel.classList.add('hidden');
-            fileLabel.innerText = '';
-
-            if (productId) {
-                const prod = products.find(p => p.id === productId);
-                document.getElementById('productFormTitle').innerText = 'Edit Produk';
-                document.getElementById('editProductId').value = prod.id;
-                document.getElementById('prodNameInput').value = prod.name;
-                document.getElementById('prodCategoryInput').value = prod.category;
-                document.getElementById('prodPriceInput').value = prod.price;
-                document.getElementById('prodStockInput').value = prod.stock;
-                document.getElementById('prodScriptInput').value = prod.scriptLink || '';
-                document.getElementById('prodDescInput').value = prod.desc || '';
-                if (prod.scriptFileName) {
-                    fileLabel.classList.remove('hidden');
-                    fileLabel.innerHTML = `<i class="fa-solid fa-file-zipper"></i> File terpasang: <strong>${prod.scriptFileName}</strong>`;
-                }
-            } else {
-                document.getElementById('productFormTitle').innerText = 'Tambah Produk Baru';
-                document.getElementById('editProductId').value = '';
-                document.getElementById('prodNameInput').value = '';
-                document.getElementById('prodPriceInput').value = '';
-                document.getElementById('prodStockInput').value = '';
-                document.getElementById('prodScriptInput').value = '';
-                document.getElementById('prodDescInput').value = '';
-            }
-
-            const modal = document.getElementById('productFormModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeProductFormModal() {
-            const modal = document.getElementById('productFormModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function readFileAsDataURL(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve(e.target.result);
-                reader.readAsDataURL(file);
-            });
-        }
-
-        async function saveProductData() {
-            const editId = document.getElementById('editProductId').value;
-            const name = document.getElementById('prodNameInput').value.trim();
-            const category = document.getElementById('prodCategoryInput').value;
-            const price = Number(document.getElementById('prodPriceInput').value);
-            const stock = Number(document.getElementById('prodStockInput').value);
-            let scriptLink = document.getElementById('prodScriptInput').value.trim();
-            const desc = document.getElementById('prodDescInput').value.trim();
-
-            if (!name || isNaN(price) || price <= 0) {
-                showToast('Data Tidak Lengkap', 'Harap isi nama produk dan harga dengan benar!', true);
-                return;
-            }
-
-            const existingProd = editId ? products.find(p => p.id === editId) : null;
-            let image = existingProd ? existingProd.image : 'https://placehold.co/400x300/4f46e5/ffffff?text=' + encodeURIComponent(name.slice(0, 15));
-            let scriptFileName = existingProd ? (existingProd.scriptFileName || '') : '';
-            let scriptFileData = existingProd ? (existingProd.scriptFileData || '') : '';
-
-            const imageFile = document.getElementById('prodImageFile').files[0];
-            if (imageFile) {
-                image = await compressImageFile(imageFile, 700, 0.8);
-            }
-
-            const scriptFile = document.getElementById('prodScriptFile').files[0];
-            if (scriptFile) {
-                scriptFileName = scriptFile.name;
-                scriptFileData = await readFileAsDataURL(scriptFile);
-                if (!scriptLink) {
-                    scriptLink = `File: ${scriptFile.name}`;
-                }
-            }
-
-            const productObj = {
-                id: editId || 'prod-' + Date.now(),
-                name,
-                category,
-                price,
-                stock: isNaN(stock) ? 0 : stock,
-                image,
-                scriptLink: scriptLink || 'https://t.me/fajrushstore',
-                scriptFileName,
-                scriptFileData,
-                desc
-            };
-
-            if (editId) {
-                const idx = products.findIndex(p => p.id === editId);
-                if (idx !== -1) products[idx] = productObj;
-            } else {
-                products.unshift(productObj);
-            }
-
-            localStorage.setItem('fajrush_products', JSON.stringify(products));
-
-            try {
-                const { error } = await supabaseClient.from('products').upsert({
-                    id: productObj.id,
-                    name: productObj.name,
-                    category: productObj.category,
-                    price: productObj.price,
-                    stock: productObj.stock,
-                    image: productObj.image,
-                    script_link: productObj.scriptLink,
-                    script_file_name: productObj.scriptFileName,
-                    script_file_data: productObj.scriptFileData,
-                    description: productObj.desc
-                });
-                if (error) {
-                    await supabaseClient.from('products').upsert({
-                        id: productObj.id,
-                        name: productObj.name,
-                        category: productObj.category,
-                        price: productObj.price,
-                        stock: productObj.stock,
-                        image: productObj.image,
-                        script_link: productObj.scriptLink,
-                        description: productObj.desc
-                    });
-                }
-            } catch (e) {
-                console.warn('Supabase product upsert error:', e);
-            }
-
-            renderProducts();
-            renderAdminProducts();
-            closeProductFormModal();
-            showToast('Produk Tersimpan', `Produk "${name}" berhasil diperbarui.`);
-        }
-
-        async function deleteProduct(productId) {
-            products = products.filter(p => p.id !== productId);
-            localStorage.setItem('fajrush_products', JSON.stringify(products));
-
-            try {
-                await supabaseClient.from('products').delete().eq('id', productId);
-            } catch (e) {
-                console.warn('Supabase product delete error:', e);
-            }
-
-            renderProducts();
-            renderAdminProducts();
-            showToast('Produk Dihapus', 'Produk telah dihapus dari katalog.');
-        }
-
-        // ================= ADMIN: CATEGORIES =================
-        function renderAdminCategories() {
-            const tbody = document.getElementById('adminCategoryTableBody');
-            if (categories.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="2" class="p-4 text-center text-slate-500">Belum ada kategori.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = categories.map(cat => `
-                <tr class="hover:bg-slate-800/40 transition">
-                    <td class="p-3 font-bold text-white">${cat}</td>
-                    <td class="p-3 text-right">
-                        <button type="button" onclick="deleteCategory('${cat.replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white transition">
-                            <i class="fa-solid fa-trash"></i> Hapus
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function openCategoryFormModal() {
-            document.getElementById('newCategoryNameInput').value = '';
-            const modal = document.getElementById('categoryFormModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeCategoryFormModal() {
-            const modal = document.getElementById('categoryFormModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        async function saveNewCategory() {
-            const name = document.getElementById('newCategoryNameInput').value.trim();
-            if (!name) {
-                showToast('Nama Kosong', 'Masukkan nama kategori terlebih dahulu!', true);
-                return;
-            }
-            if (categories.includes(name)) {
-                showToast('Kategori Ada', 'Kategori tersebut sudah tersedia.', true);
-                return;
-            }
-
-            categories.push(name);
-            localStorage.setItem('fajrush_categories', JSON.stringify(categories));
-
-            try {
-                await supabaseClient.from('categories').upsert({ name });
-            } catch (e) {
-                console.warn('Supabase category insert error:', e);
-            }
-
-            renderCategories();
-            renderAdminCategories();
-            closeCategoryFormModal();
-            showToast('Kategori Ditambahkan', `Kategori "${name}" berhasil ditambahkan.`);
-        }
-
-        async function deleteCategory(catName) {
-            categories = categories.filter(c => c !== catName);
-            localStorage.setItem('fajrush_categories', JSON.stringify(categories));
-
-            try {
-                await supabaseClient.from('categories').delete().eq('name', catName);
-            } catch (e) {
-                console.warn('Supabase category delete error:', e);
-            }
-
-            renderCategories();
-            renderAdminCategories();
-            showToast('Kategori Dihapus', `Kategori "${catName}" telah dihapus.`);
-        }
-
-        // ================= ADMIN: VOUCHERS =================
-        function renderAdminVouchers() {
-            const tbody = document.getElementById('adminVoucherTableBody');
-            if (vouchers.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500">Belum ada voucher.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = vouchers.map(v => {
-                const valLabel = v.type === 'percent' ? `${v.value}%` : `Rp ${Number(v.value).toLocaleString('id-ID')}`;
-                return `
-                    <tr class="hover:bg-slate-800/40 transition">
-                        <td class="p-3 font-black text-indigo-400">${v.code}</td>
-                        <td class="p-3 font-semibold text-white">${valLabel}</td>
-                        <td class="p-3 text-slate-400">${v.startDate || '-'} s/d ${v.endDate || '-'}</td>
-                        <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">Aktif</span></td>
-                        <td class="p-3 text-right">
-                            <button type="button" onclick="deleteVoucher('${v.id}')" class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white transition">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function openVoucherFormModal() {
-            document.getElementById('vCodeInput').value = '';
-            document.getElementById('vValueInput').value = '';
-            document.getElementById('vStartInput').value = '';
-            document.getElementById('vEndInput').value = '';
-            const modal = document.getElementById('voucherFormModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeVoucherFormModal() {
-            const modal = document.getElementById('voucherFormModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        async function saveVoucherData() {
-            const code = document.getElementById('vCodeInput').value.trim().toUpperCase();
-            const type = document.getElementById('vTypeInput').value;
-            const value = Number(document.getElementById('vValueInput').value);
-            const startDate = document.getElementById('vStartInput').value;
-            const endDate = document.getElementById('vEndInput').value;
-
-            if (!code || isNaN(value) || value <= 0) {
-                showToast('Data Tidak Valid', 'Isi kode voucher dan nominal potongan dengan benar!', true);
-                return;
-            }
-
-            const newV = {
-                id: 'v-' + Date.now(),
-                code,
-                type,
-                value,
-                startDate,
-                endDate,
-                active: true
-            };
-
-            vouchers.unshift(newV);
-            localStorage.setItem('fajrush_vouchers', JSON.stringify(vouchers));
-
-            try {
-                await supabaseClient.from('vouchers').insert([{
-                    id: newV.id,
-                    code: newV.code,
-                    type: newV.type,
-                    value: newV.value,
-                    start_date: newV.startDate,
-                    end_date: newV.endDate,
-                    active: true
-                }]);
-            } catch (e) {
-                console.warn('Supabase voucher insert error:', e);
-            }
-
-            renderVouchers();
-            renderAdminVouchers();
-            closeVoucherFormModal();
-            showToast('Voucher Ditambahkan', `Kode voucher ${code} berhasil dibuat!`);
-        }
-
-        async function deleteVoucher(voucherId) {
-            vouchers = vouchers.filter(v => v.id !== voucherId);
-            localStorage.setItem('fajrush_vouchers', JSON.stringify(vouchers));
-
-            try {
-                await supabaseClient.from('vouchers').delete().eq('id', voucherId);
-            } catch (e) {
-                console.warn('Supabase voucher delete error:', e);
-            }
-
-            renderVouchers();
-            renderAdminVouchers();
-            showToast('Voucher Dihapus', 'Voucher telah dihapus.');
-        }
-
-        // ================= ADMIN: QRIS SETTING =================
-        async function previewNewQris(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const compressed = await compressImageFile(file, 900, 0.85);
-            pendingQrisBase64 = compressed;
-            document.getElementById('adminQrisPreviewImg').src = compressed;
-        }
-
-        async function saveNewQris() {
-            if (!pendingQrisBase64) {
-                showToast('Pilih Gambar', 'Pilih gambar QRIS baru terlebih dahulu!', true);
-                return;
-            }
-            qrisImageUrl = pendingQrisBase64;
-            localStorage.setItem('fajrush_qris', qrisImageUrl);
-
-            try {
-                await supabaseClient.from('settings').upsert({
-                    key: 'qris_image',
-                    value: qrisImageUrl
-                });
-            } catch (e) {
-                console.warn('Supabase QRIS upsert error:', e);
-            }
-
-            pendingQrisBase64 = null;
-            showToast('QRIS Diperbarui', 'Gambar QRIS pembayaran berhasil disimpan!');
-        }
-
-        async function detectTelegramChatId() {
-            telegramChatId = '';
-            const detected = await resolveTelegramChatId();
-            if (detected) {
-                document.getElementById('adminTgChatIdInput').value = detected;
-                showToast('Chat ID Ditemukan', `Chat ID ${detected} berhasil dideteksi & disimpan!`);
-            } else {
-                showToast('Belum Terdeteksi', 'Kirim /start ke @bieiwjwkwjsk_bot di Telegram terlebih dahulu, lalu coba lagi.', true);
-            }
-        }
-
-        async function saveTelegramSettings() {
-            const val = document.getElementById('adminTgChatIdInput').value.trim();
-            if (!val) {
-                showToast('Chat ID Kosong', 'Masukkan Chat ID Telegram atau klik tombol Deteksi!', true);
-                return;
-            }
-            telegramChatId = val;
-            localStorage.setItem('fajrush_tg_chat_id', telegramChatId);
-            try {
-                await supabaseClient.from('settings').upsert({
-                    key: 'telegram_chat_id',
-                    value: telegramChatId
-                });
-            } catch (e) {
-                console.warn('Supabase Telegram Chat ID upsert error:', e);
-            }
-            showToast('Tersimpan', `Chat ID Bot Telegram (${telegramChatId}) berhasil disimpan!`);
-        }
-
-        async function testTelegramBot() {
-            const val = document.getElementById('adminTgChatIdInput').value.trim();
-            if (val) telegramChatId = val;
-            const targetId = await resolveTelegramChatId();
-            if (!targetId) {
-                showToast('Chat ID Belum Ada', 'Kirim /start ke @bieiwjwkwjsk_bot dulu lalu klik Deteksi!', true);
-                return;
-            }
-            try {
-                const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: targetId,
-                        text: '✅ Tes Koneksi Berhasil! Bot @bieiwjwkwjsk_bot siap menerima bukti pembayaran otomatis dari FAJRUSH STORE.'
-                    })
-                });
-                const json = await res.json();
-                if (json.ok) {
-                    showToast('Pesan Terkirim', 'Silakan cek pesan tes di Telegram Anda!');
-                } else {
-                    showToast('Gagal Mengirim', json.description || 'Pastikan Anda sudah memulai chat dengan bot.', true);
-                }
-            } catch (err) {
-                showToast('Error Koneksi', 'Gagal menghubungi server Telegram.', true);
-            }
-        }
-
-        // ================= ADMIN: TRANSACTIONS =================
-        function renderAdminTransactions() {
-            const tbody = document.getElementById('adminTransactionTableBody');
-            tbody.innerHTML = '';
-
-            if (transactions.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-500">Belum ada riwayat transaksi.</td></tr>';
-                return;
-            }
-
-            transactions.forEach((t, idx) => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-800/40 transition';
-                const proofBtn = t.proofImage
-                    ? `<button type="button" onclick="openProofPreviewModal(${idx})" class="px-2.5 py-1 rounded-lg bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white text-[10px] font-bold transition inline-flex items-center gap-1"><i class="fa-solid fa-image"></i> Lihat</button>`
-                    : `<span class="text-[10px] text-slate-500">-</span>`;
-
-                const prod = products.find(p => p.id === t.productId || p.name === t.productName);
-                const category = t.productCategory || (prod ? prod.category : '');
-                const isScriptBot = isScriptBotProduct(category);
-                const isPending = t.status === 'Menunggu Konfirmasi';
-
-                let statusActionHtml = '';
-                if (isScriptBot && isPending) {
-                    statusActionHtml = `
-                        <div class="flex flex-col items-end gap-1.5">
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300">Menunggu Konfirmasi</span>
-                            <button type="button" onclick="confirmScriptTransaction('${t.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold transition shadow flex items-center gap-1">
-                                <i class="fa-solid fa-check"></i> Konfirmasi Akses
-                            </button>
-                        </div>
-                    `;
-                } else if (isScriptBot && t.status === 'Terkonfirmasi') {
-                    statusActionHtml = `
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 inline-flex items-center gap-1">
-                            <i class="fa-solid fa-circle-check"></i> Terkonfirmasi
-                        </span>
-                    `;
-                } else {
-                    statusActionHtml = `
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">${t.status}</span>
-                    `;
-                }
-
-                tr.innerHTML = `
-                    <td class="p-3 text-slate-400">
-                        <span class="block text-[10px] font-mono text-indigo-400 font-bold">${t.id || '-'}</span>
-                        <span>${t.time}</span>
-                    </td>
-                    <td class="p-3">
-                        <span class="font-bold text-white block">${t.productName}</span>
-                        ${category ? `<span class="text-[10px] text-slate-400">${category}</span>` : ''}
-                    </td>
-                    <td class="p-3 text-indigo-300">${t.contact}</td>
-                    <td class="p-3 font-semibold text-emerald-400">Rp ${Number(t.total).toLocaleString('id-ID')}</td>
-                    <td class="p-3">${proofBtn}</td>
-                    <td class="p-3 text-right">${statusActionHtml}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        async function confirmScriptTransaction(trxId) {
-            const idx = transactions.findIndex(t => t.id === trxId);
-            if (idx === -1) return;
-
-            transactions[idx].status = 'Terkonfirmasi';
-            localStorage.setItem('fajrush_transactions', JSON.stringify(transactions));
-
-            try {
-                await supabaseClient
-                    .from('transactions')
-                    .update({ status: 'Terkonfirmasi' })
-                    .eq('id', trxId);
-            } catch (e) {
-                console.warn('Supabase confirm transaction error:', e);
-            }
-
-            renderAdminTransactions();
-            showToast('Pesanan Dikonfirmasi', `Akses file script untuk ${transactions[idx].id} telah dibuka bagi pembeli!`);
-        }
-
-        function openProofPreviewModal(idx) {
-            const trx = transactions[idx];
-            if (!trx || !trx.proofImage) return;
-            document.getElementById('adminProofModalImg').src = trx.proofImage;
-            const modal = document.getElementById('proofPreviewModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeProofPreviewModal() {
-            const modal = document.getElementById('proofPreviewModal');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        }
-
-        async function clearTransactions() {
-            transactions = [];
-            localStorage.setItem('fajrush_transactions', JSON.stringify([]));
-            try {
-                await supabaseClient.from('transactions').delete().neq('id', '');
-            } catch (e) {
-                console.warn('Supabase clear transactions error:', e);
-            }
-            renderAdminTransactions();
-            showToast('Riwayat Dibersihkan', 'Seluruh riwayat transaksi telah dihapus.');
-        }
-
-        // ================= TOAST NOTIFICATION =================
-        let toastTimeout = null;
-        function showToast(title, desc, isError = false) {
-            const toast = document.getElementById('toastNotification');
-            const iconBox = document.getElementById('toastIcon');
-            document.getElementById('toastTitle').innerText = title;
-            document.getElementById('toastDesc').innerText = desc;
-
-            if (isError) {
-                iconBox.className = 'w-8 h-8 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center shrink-0';
-                iconBox.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
-            } else {
-                iconBox.className = 'w-8 h-8 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center shrink-0';
-                iconBox.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-            }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            if (toastTimeout) clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3500);
-        }
-    </script>
-</body>
-</html>
+// ... existing code ... -->
